@@ -8,44 +8,46 @@
 import Foundation
 import Result
 
-enum BackendError: Error {
+public enum BackendError: Error {
     case notReachable
     case invalidRequest
     case invalidResponse
     case underlying(Error)
 }
 
-enum HTTPMethod: String {
+public enum HTTPMethod: String {
     case GET
     case POST
 }
 
-protocol JSONHTTPRequestable {
+public protocol JSONHTTPRequestable {
     func request<T: Decodable>(method: HTTPMethod, baseURL: URL, resource: String, headers: [String: String]?, params: [String: Any]?, completion: ((Result<T, BackendError>) -> Void)?) -> URLSessionTask?
     func request<T: Decodable, U: Encodable>(method: HTTPMethod, baseURL: URL, resource: String, headers: [String: String]?, params: [String: Any]?, body: U, completion: ((Result<T, BackendError>) -> Void)?) -> URLSessionTask?
 }
 
-class JSONAPI: JSONHTTPRequestable {
+public class JSONAPI: JSONHTTPRequestable {
+    
+    public init() {}
     
     @discardableResult
-    func request<T>(method: HTTPMethod,
-                       baseURL: URL,
-                       resource: String = "/",
-                       headers: [String : String]? = nil,
-                       params: [String: Any]? = nil,
-                       completion: ((Result<T, BackendError>) -> Void)?) -> URLSessionTask? where T : Decodable {
+    public func request<T>(method: HTTPMethod,
+                           baseURL: URL,
+                           resource: String = "/",
+                           headers: [String : String]? = nil,
+                           params: [String: Any]? = nil,
+                           completion: ((Result<T, BackendError>) -> Void)?) -> URLSessionTask? where T : Decodable {
         
         return requestData(method: method, baseURL: baseURL, resource: resource, headers: headers, params: params, body: nil, completion: encodeResponse(completion: completion))
     }
     
     @discardableResult
-    func request<T, U>(method: HTTPMethod,
-                       baseURL: URL,
-                       resource: String = "/",
-                       headers: [String : String]? = nil,
-                       params: [String: Any]? = nil,
-                       body: U,
-                       completion: ((Result<T, BackendError>) -> Void)?) -> URLSessionTask? where T : Decodable, U : Encodable {
+    public func request<T, U>(method: HTTPMethod,
+                              baseURL: URL,
+                              resource: String = "/",
+                              headers: [String : String]? = nil,
+                              params: [String: Any]? = nil,
+                              body: U,
+                              completion: ((Result<T, BackendError>) -> Void)?) -> URLSessionTask? where T : Decodable, U : Encodable {
         
         do {
             let data = try JSONEncoder().encode(body)
