@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
   s.name          = "JSONAPI"
-  s.version       = "0.0.1"
+  s.version       = "0.1.0"
   s.summary       = "Simple JSON API class to request codable resources."
   s.description   = <<-DESC
                       Simple JSON API class. It allows to request a JSON API over HTTP with simple methods.
@@ -10,7 +10,7 @@ Pod::Spec.new do |s|
   s.homepage      = "https://github.com/ChaosCoder/JSONAPI"
   s.license       = { :type => 'MIT', :file => 'LICENSE.md'}
   s.author                = { "Andreas Ganske" => "info@chaosspace.de" }
-  s.ios.deployment_target = "9.0"
+  s.ios.deployment_target = "10.0"
   s.source        = { :git => "https://github.com/ChaosCoder/JSONAPI.git", :tag => s.version }
   s.source_files  = "JSONAPI", "JSONAPI/**/*.swift"
   s.swift_version = "4.0"
