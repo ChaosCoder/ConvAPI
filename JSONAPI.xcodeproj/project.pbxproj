@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		2F9B46485515218277E7615E /* Pods_JSONAPITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C33CE0EB29FDC31EFD2585F /* Pods_JSONAPITests.framework */; };
 		70D343B403986C299BB056A6 /* Pods_JSONAPI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B735B5B5478C2C1F5112D63E /* Pods_JSONAPI.framework */; };
+		7D42487720862F3200E44375 /* URLSession+Synchronous.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D42487620862F3200E44375 /* URLSession+Synchronous.swift */; };
 		7DDDFB2020839BD700F3426C /* JSONAPI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DDDFB1620839BD700F3426C /* JSONAPI.framework */; };
 		7DDDFB2520839BD700F3426C /* JSONAPITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DDDFB2420839BD700F3426C /* JSONAPITests.swift */; };
 		7DDDFB2720839BD700F3426C /* JSONAPI.h in Headers */ = {isa = PBXBuildFile; fileRef = 7DDDFB1920839BD700F3426C /* JSONAPI.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -29,6 +30,7 @@
 		069F925410042A8C74F4DE40 /* Pods-JSONAPI.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-JSONAPI.release.xcconfig"; path = "Pods/Target Support Files/Pods-JSONAPI/Pods-JSONAPI.release.xcconfig"; sourceTree = "<group>"; };
 		2C33CE0EB29FDC31EFD2585F /* Pods_JSONAPITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_JSONAPITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4CA00CB0209C9D3F50C4E54F /* Pods-JSONAPITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-JSONAPITests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-JSONAPITests/Pods-JSONAPITests.debug.xcconfig"; sourceTree = "<group>"; };
+		7D42487620862F3200E44375 /* URLSession+Synchronous.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URLSession+Synchronous.swift"; sourceTree = "<group>"; };
 		7DDDFB1620839BD700F3426C /* JSONAPI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = JSONAPI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		7DDDFB1920839BD700F3426C /* JSONAPI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JSONAPI.h; sourceTree = "<group>"; };
 		7DDDFB1A20839BD700F3426C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -97,6 +99,7 @@
 				7DDDFB1920839BD700F3426C /* JSONAPI.h */,
 				7DDDFB3020839BF500F3426C /* JSONAPI.swift */,
 				7DDDFB1A20839BD700F3426C /* Info.plist */,
+				7D42487620862F3200E44375 /* URLSession+Synchronous.swift */,
 			);
 			path = JSONAPI;
 			sourceTree = "<group>";
@@ -322,6 +325,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7D42487720862F3200E44375 /* URLSession+Synchronous.swift in Sources */,
 				7DDDFB3120839BF500F3426C /* JSONAPI.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -479,7 +483,11 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = JSONAPI/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = de.chaosspace.JSONAPI;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
@@ -503,7 +511,11 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = JSONAPI/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = de.chaosspace.JSONAPI;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
@@ -520,7 +532,11 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 49YH985E25;
 				INFOPLIST_FILE = JSONAPITests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = de.chaosspace.JSONAPITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
@@ -536,7 +552,11 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 49YH985E25;
 				INFOPLIST_FILE = JSONAPITests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = de.chaosspace.JSONAPITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;

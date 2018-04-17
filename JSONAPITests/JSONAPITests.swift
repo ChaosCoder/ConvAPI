@@ -12,8 +12,23 @@ import Result
 
 class JSONAPITests: XCTestCase {
     
+    struct Empty: Codable {}
+    
     struct Post: Codable, Equatable {
         let name: String
+    }
+    
+    func testPostWithEmptyResponse() {
+        let api = JSONAPI() as API
+        let url = URL(string: "https://httpbin.org")!
+        
+        let expect = self.expectation(description: "Completion")
+        api.trigger(method: HTTPMethod.POST, baseURL: url, resource: "/status/200") { (error: BackendError?) in
+            XCTAssertNil(error)
+            expect.fulfill()
+        }
+        
+        wait(for: [expect], timeout: 10)
     }
     
     func testPost() {
@@ -23,14 +38,13 @@ class JSONAPITests: XCTestCase {
         let url = URL(string: "https://putsreq.com")!
         
         let expect = self.expectation(description: "Completion")
-        api.request(method: HTTPMethod.POST, baseURL: url, resource: "/2AqxIseyzrby33355GBr", body: post) { (result: Result<Post, BackendError>) in
+        api.retrieve(method: HTTPMethod.POST, baseURL: url, resource: "/2AqxIseyzrby33355GBr", body: post) { (result: Result<Post, BackendError>) in
             if case let .success(retrieved) = result {
                 XCTAssertEqual(retrieved, post)
                 expect.fulfill()
-            } else {
-                XCTFail()
             }
         }
+        
         wait(for: [expect], timeout: 10)
     }
     
@@ -42,7 +56,7 @@ class JSONAPITests: XCTestCase {
         let params: [String: Any] = ["name": "test"]
         let expect = self.expectation(description: "Completion")
         
-        api.request(method: HTTPMethod.GET, baseURL: url, resource: "/2AqxIseyzrby33355GBr", params: params) { (result: Result<Post, BackendError>) in
+        api.retrieve(method: HTTPMethod.GET, baseURL: url, resource: "/2AqxIseyzrby33355GBr", params: params) { (result: Result<Post, BackendError>) in
             if case let .success(retrieved) = result {
                 XCTAssertEqual(retrieved, post)
                 expect.fulfill()

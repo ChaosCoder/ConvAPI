@@ -18,80 +18,143 @@ public enum BackendError: Error {
 public enum HTTPMethod: String {
     case GET
     case POST
+    case DELETE
+    case PUT
+    case HEAD
+    case OPTIONS
+    case TRACE
 }
 
-public protocol JSONHTTPRequestable {
-    func request<T: Decodable>(method: HTTPMethod, baseURL: URL, resource: String, headers: [String: String]?, params: [String: Any]?, completion: ((Result<T, BackendError>) -> Void)?) -> URLSessionTask?
-    func request<T: Decodable, U: Encodable>(method: HTTPMethod, baseURL: URL, resource: String, headers: [String: String]?, params: [String: Any]?, body: U, completion: ((Result<T, BackendError>) -> Void)?) -> URLSessionTask?
+private struct Empty: Encodable {}
+
+public protocol API {
+    
+    func trigger<U>(method: HTTPMethod,
+                    baseURL: URL,
+                    resource: String,
+                    headers: [String : String]?,
+                    params: [String: Any]?,
+                    body: U,
+                    completion: @escaping ((BackendError?) -> Void)) where U: Encodable
+    
+    func retrieve<T, U>(method: HTTPMethod,
+                        baseURL: URL,
+                        resource: String,
+                        headers: [String : String]?,
+                        params: [String: Any]?,
+                        body: U,
+                        completion: @escaping ((Result<T, BackendError>) -> Void)) where T: Decodable, U: Encodable
 }
 
-public class JSONAPI: JSONHTTPRequestable {
+public extension API {
     
-    public init() {}
+    func trigger(method: HTTPMethod,
+                 baseURL: URL,
+                 resource: String = "/",
+                 headers: [String : String]? = nil,
+                 params: [String: Any]? = nil,
+                 completion: @escaping ((BackendError?) -> Void)) {
+        trigger(method: method, baseURL: baseURL, resource: resource, headers: headers, params: params, body: Empty(), completion: completion)
+    }
     
-    @discardableResult
-    public func request<T>(method: HTTPMethod,
+    func retrieve<T>(method: HTTPMethod,
+                     baseURL: URL,
+                     resource: String = "/",
+                     headers: [String : String]? = nil,
+                     params: [String: Any]? = nil,
+                     completion: @escaping ((Result<T, BackendError>) -> Void)) where T: Decodable {
+        retrieve(method: method, baseURL: baseURL, resource: resource, headers: headers, params: params, body: Empty(), completion: completion)
+    }
+}
+
+public class JSONAPI: API {
+    
+    var urlSession: URLSession
+    
+    public init(urlSession: URLSession = URLSession.shared) {
+        self.urlSession = urlSession
+    }
+    
+    public func trigger<U>(method: HTTPMethod,
                            baseURL: URL,
                            resource: String = "/",
                            headers: [String : String]? = nil,
                            params: [String: Any]? = nil,
-                           completion: ((Result<T, BackendError>) -> Void)?) -> URLSessionTask? where T : Decodable {
+                           body: U,
+                           completion: @escaping ((BackendError?) -> Void)) where U: Encodable {
         
-        return requestData(method: method, baseURL: baseURL, resource: resource, headers: headers, params: params, body: nil, completion: encodeResponse(completion: completion))
-    }
-    
-    @discardableResult
-    public func request<T, U>(method: HTTPMethod,
-                              baseURL: URL,
-                              resource: String = "/",
-                              headers: [String : String]? = nil,
-                              params: [String: Any]? = nil,
-                              body: U,
-                              completion: ((Result<T, BackendError>) -> Void)?) -> URLSessionTask? where T : Decodable, U : Encodable {
-        
-        do {
-            let data = try JSONEncoder().encode(body)
-            let encodeCompletion = encodeResponse(completion: completion)
-            return requestData(method: method, baseURL: baseURL, resource: resource, headers: headers, params: params, body: data, completion: encodeCompletion)
-        } catch {
-            completion?(.failure(.invalidRequest))
-            return nil
+        let queue = OperationQueue.current?.underlyingQueue
+        let threadCompletion = { (result: BackendError?) in
+            queue?.async {
+                completion(result)
+            }
         }
-    }
-    
-    private func encodeResponse<T: Decodable>(completion: ((Result<T, BackendError>) -> Void)?) -> ((Result<Data?, BackendError>) -> Void) {
-        return { (result: Result<Data?, BackendError>) in
-            switch result {
-            case .success(let data):
-                guard let data = data else {
-                    completion?(.failure(.invalidResponse))
-                    return
-                }
-                
-                let decoder = JSONDecoder()
-                do {
-                    let object = try decoder.decode(T.self, from: data)
-                    completion?(.success(object))
-                } catch {
-                    completion?(.failure(.invalidResponse))
-                }
-            case .failure(let error):
-                completion?(.failure(error))
+        
+        DispatchQueue.global(qos: .userInitiated).async {
+            do {
+                let encoder = JSONEncoder()
+                encoder.dateEncodingStrategy = .iso8601
+                let data = try encoder.encode(body)
+                let _ = try self.request(method: method, baseURL: baseURL, resource: resource, headers: headers, params: params, body: data)
+                threadCompletion(nil)
+            } catch (let error as BackendError) {
+                threadCompletion(error)
+            } catch {
+                threadCompletion(BackendError.underlying(error))
             }
         }
     }
     
-    private func requestData(method: HTTPMethod = .GET, baseURL: URL, resource: String = "/", headers: [String: String]? = nil, params: [String: Any]? = nil, body: Data? = nil, completion: ((Result<Data?, BackendError>) -> Void)?) -> URLSessionTask? {
+    public func retrieve<T, U>(method: HTTPMethod,
+                               baseURL: URL,
+                               resource: String = "/",
+                               headers: [String : String]? = nil,
+                               params: [String: Any]? = nil,
+                               body: U,
+                               completion: @escaping ((Result<T, BackendError>) -> Void)) where T: Decodable, U: Encodable {
+        
+        let queue = OperationQueue.current?.underlyingQueue
+        let threadCompletion = { (result: Result<T, BackendError>) in
+            queue?.async {
+                completion(result)
+            }
+        }
+        
+        DispatchQueue.global(qos: .userInitiated).async {
+            do {
+                let encoder = JSONEncoder()
+                encoder.dateEncodingStrategy = .iso8601
+                let bodyData = try encoder.encode(body)
+                
+                let response = try self.request(method: method, baseURL: baseURL, resource: resource, headers: headers, params: params, body: bodyData)
+                
+                let decoder = JSONDecoder()
+                decoder.dateDecodingStrategy = .iso8601
+                let object = try decoder.decode(T.self, from: response)
+                
+                threadCompletion(.success(object))
+            } catch (let error as BackendError) {
+                threadCompletion(.failure(error))
+            } catch {
+                threadCompletion(.failure(BackendError.underlying(error)))
+            }
+        }
+    }
+    
+    public func request(method: HTTPMethod = .GET,
+                        baseURL: URL,
+                        resource: String = "/",
+                        headers: [String: String]? = nil,
+                        params: [String: Any]? = nil,
+                        body: Data? = nil) throws -> Data {
         
         let resourceURL = baseURL.appendingPathComponent(resource)
         
         guard var urlComponents = URLComponents(url: resourceURL, resolvingAgainstBaseURL: false) else {
-            completion?(.failure(.invalidRequest))
-            return nil
+            throw BackendError.invalidRequest
         }
         
-        if let params = params,
-            method == .GET {
+        if let params = params {
             urlComponents.queryItems = params.compactMap ({ (arg) -> URLQueryItem in
                 let (key, value) = arg
                 return URLQueryItem(name: key, value: String(describing: value))
@@ -99,8 +162,7 @@ public class JSONAPI: JSONHTTPRequestable {
         }
         
         guard let url = urlComponents.url else {
-            completion?(.failure(.invalidRequest))
-            return nil
+            throw BackendError.invalidRequest
         }
         
         var request = URLRequest(url: url)
@@ -113,22 +175,17 @@ public class JSONAPI: JSONHTTPRequestable {
             }
         }
         
-        let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
-            if let error = error {
-                completion?(.failure(.underlying(error)))
-                return
-            }
-            
-            guard let response = response as? HTTPURLResponse,
-                response.statusCode == 200 else {
-                    completion?(.failure(.notReachable))
-                    return
-            }
-            
-            completion?(.success(data))
-        }
-        task.resume()
+        let (receivedData, response) = try urlSession.synchronousDataTask(with: request)
         
-        return task
+        guard let data = receivedData else {
+            throw BackendError.invalidResponse
+        }
+        
+        guard let httpResponse = response as? HTTPURLResponse,
+            httpResponse.statusCode == 200 else {
+                throw BackendError.notReachable
+        }
+        
+        return data
     }
 }
