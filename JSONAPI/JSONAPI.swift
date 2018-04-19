@@ -8,65 +8,6 @@
 import Foundation
 import Result
 
-public enum BackendError: Error {
-    case notReachable
-    case invalidRequest
-    case invalidResponse
-    case underlying(Error)
-}
-
-public enum HTTPMethod: String {
-    case GET
-    case POST
-    case DELETE
-    case PUT
-    case HEAD
-    case OPTIONS
-    case TRACE
-}
-
-private struct Empty: Encodable {}
-
-public protocol API {
-    
-    func trigger<U>(method: HTTPMethod,
-                    baseURL: URL,
-                    resource: String,
-                    headers: [String : String]?,
-                    params: [String: Any]?,
-                    body: U,
-                    completion: @escaping ((BackendError?) -> Void)) where U: Encodable
-    
-    func retrieve<T, U>(method: HTTPMethod,
-                        baseURL: URL,
-                        resource: String,
-                        headers: [String : String]?,
-                        params: [String: Any]?,
-                        body: U,
-                        completion: @escaping ((Result<T, BackendError>) -> Void)) where T: Decodable, U: Encodable
-}
-
-public extension API {
-    
-    func trigger(method: HTTPMethod,
-                 baseURL: URL,
-                 resource: String = "/",
-                 headers: [String : String]? = nil,
-                 params: [String: Any]? = nil,
-                 completion: @escaping ((BackendError?) -> Void)) {
-        trigger(method: method, baseURL: baseURL, resource: resource, headers: headers, params: params, body: Empty(), completion: completion)
-    }
-    
-    func retrieve<T>(method: HTTPMethod,
-                     baseURL: URL,
-                     resource: String = "/",
-                     headers: [String : String]? = nil,
-                     params: [String: Any]? = nil,
-                     completion: @escaping ((Result<T, BackendError>) -> Void)) where T: Decodable {
-        retrieve(method: method, baseURL: baseURL, resource: resource, headers: headers, params: params, body: Empty(), completion: completion)
-    }
-}
-
 public class JSONAPI: API {
     
     var urlSession: URLSession
@@ -80,11 +21,11 @@ public class JSONAPI: API {
                            resource: String = "/",
                            headers: [String : String]? = nil,
                            params: [String: Any]? = nil,
-                           body: U,
-                           completion: @escaping ((BackendError?) -> Void)) where U: Encodable {
+                           body: U? = nil,
+                           completion: @escaping ((APIError?) -> Void)) where U: Encodable {
         
         let queue = OperationQueue.current?.underlyingQueue
-        let threadCompletion = { (result: BackendError?) in
+        let threadCompletion = { (result: APIError?) in
             queue?.async {
                 completion(result)
             }
@@ -92,15 +33,17 @@ public class JSONAPI: API {
         
         DispatchQueue.global(qos: .userInitiated).async {
             do {
-                let encoder = JSONEncoder()
-                encoder.dateEncodingStrategy = .iso8601
-                let data = try encoder.encode(body)
+                let data = try body.flatMap({ (body) -> Data in
+                    let encoder = JSONEncoder()
+                    encoder.dateEncodingStrategy = .iso8601
+                    return try encoder.encode(body)
+                })
                 let _ = try self.request(method: method, baseURL: baseURL, resource: resource, headers: headers, params: params, body: data)
                 threadCompletion(nil)
-            } catch (let error as BackendError) {
+            } catch (let error as APIError) {
                 threadCompletion(error)
             } catch {
-                threadCompletion(BackendError.underlying(error))
+                threadCompletion(APIError.underlying(error))
             }
         }
     }
@@ -110,11 +53,11 @@ public class JSONAPI: API {
                                resource: String = "/",
                                headers: [String : String]? = nil,
                                params: [String: Any]? = nil,
-                               body: U,
-                               completion: @escaping ((Result<T, BackendError>) -> Void)) where T: Decodable, U: Encodable {
+                               body: U? = nil,
+                               completion: @escaping ((Result<T, APIError>) -> Void)) where T: Decodable, U: Encodable {
         
         let queue = OperationQueue.current?.underlyingQueue
-        let threadCompletion = { (result: Result<T, BackendError>) in
+        let threadCompletion = { (result: Result<T, APIError>) in
             queue?.async {
                 completion(result)
             }
@@ -122,21 +65,22 @@ public class JSONAPI: API {
         
         DispatchQueue.global(qos: .userInitiated).async {
             do {
-                let encoder = JSONEncoder()
-                encoder.dateEncodingStrategy = .iso8601
-                let bodyData = try encoder.encode(body)
-                
-                let response = try self.request(method: method, baseURL: baseURL, resource: resource, headers: headers, params: params, body: bodyData)
+                let data = try body.flatMap({ (body) -> Data in
+                    let encoder = JSONEncoder()
+                    encoder.dateEncodingStrategy = .iso8601
+                    return try encoder.encode(body)
+                })
+                let response = try self.request(method: method, baseURL: baseURL, resource: resource, headers: headers, params: params, body: data)
                 
                 let decoder = JSONDecoder()
                 decoder.dateDecodingStrategy = .iso8601
                 let object = try decoder.decode(T.self, from: response)
                 
                 threadCompletion(.success(object))
-            } catch (let error as BackendError) {
+            } catch (let error as APIError) {
                 threadCompletion(.failure(error))
             } catch {
-                threadCompletion(.failure(BackendError.underlying(error)))
+                threadCompletion(.failure(APIError.underlying(error)))
             }
         }
     }
@@ -151,18 +95,19 @@ public class JSONAPI: API {
         let resourceURL = baseURL.appendingPathComponent(resource)
         
         guard var urlComponents = URLComponents(url: resourceURL, resolvingAgainstBaseURL: false) else {
-            throw BackendError.invalidRequest
+            throw APIError.invalidRequest
         }
         
         if let params = params {
             urlComponents.queryItems = params.compactMap ({ (arg) -> URLQueryItem in
                 let (key, value) = arg
-                return URLQueryItem(name: key, value: String(describing: value))
+                let encodedValue = String(describing: value).addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
+                return URLQueryItem(name: key, value: encodedValue)
             })
         }
         
         guard let url = urlComponents.url else {
-            throw BackendError.invalidRequest
+            throw APIError.invalidRequest
         }
         
         var request = URLRequest(url: url)
@@ -178,12 +123,12 @@ public class JSONAPI: API {
         let (receivedData, response) = try urlSession.synchronousDataTask(with: request)
         
         guard let data = receivedData else {
-            throw BackendError.invalidResponse
+            throw APIError.invalidResponse
         }
         
         guard let httpResponse = response as? HTTPURLResponse,
-            httpResponse.statusCode == 200 else {
-                throw BackendError.notReachable
+            (200..<300).contains(httpResponse.statusCode) else {
+                throw APIError.notReachable
         }
         
         return data
