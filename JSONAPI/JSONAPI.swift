@@ -15,13 +15,14 @@ public class JSONAPI: API {
     public init(urlSession: URLSession = URLSession.shared) {
         self.urlSession = urlSession
     }
-    
+
     public func trigger<U>(method: HTTPMethod,
                            baseURL: URL,
                            resource: String = "/",
                            headers: [String : String]? = nil,
                            params: [String: Any]? = nil,
                            body: U? = nil,
+                           decorator: ((inout URLRequest) -> Void)? = nil,
                            completion: @escaping ((APIError?) -> Void)) where U: Encodable {
         
         let queue = OperationQueue.current?.underlyingQueue
@@ -38,7 +39,15 @@ public class JSONAPI: API {
                     encoder.dateEncodingStrategy = .iso8601
                     return try encoder.encode(body)
                 })
-                let _ = try self.request(method: method, baseURL: baseURL, resource: resource, headers: headers, params: params, body: data)
+                var request = try self.request(method: method, baseURL: baseURL, resource: resource, headers: headers, params: params, body: data)
+                decorator?(&request)
+                let (_, response) = try self.urlSession.synchronousDataTask(with: request)
+                
+                guard let httpResponse = response as? HTTPURLResponse,
+                    (200..<300).contains(httpResponse.statusCode) else {
+                        throw APIError.notReachable
+                }
+                
                 threadCompletion(nil)
             } catch (let error as APIError) {
                 threadCompletion(error)
@@ -54,6 +63,7 @@ public class JSONAPI: API {
                                headers: [String : String]? = nil,
                                params: [String: Any]? = nil,
                                body: U? = nil,
+                               decorator: ((inout URLRequest) -> Void)? = nil,
                                completion: @escaping ((Result<T, APIError>) -> Void)) where T: Decodable, U: Encodable {
         
         let queue = OperationQueue.current?.underlyingQueue
@@ -70,11 +80,23 @@ public class JSONAPI: API {
                     encoder.dateEncodingStrategy = .iso8601
                     return try encoder.encode(body)
                 })
-                let response = try self.request(method: method, baseURL: baseURL, resource: resource, headers: headers, params: params, body: data)
+                var request = try self.request(method: method, baseURL: baseURL, resource: resource, headers: headers, params: params, body: data)
+                decorator?(&request)
+                
+                let (receivedData, response) = try self.urlSession.synchronousDataTask(with: request)
+                
+                guard let responseData = receivedData else {
+                    throw APIError.invalidResponse
+                }
+                
+                guard let httpResponse = response as? HTTPURLResponse,
+                    (200..<300).contains(httpResponse.statusCode) else {
+                        throw APIError.notReachable
+                }
                 
                 let decoder = JSONDecoder()
                 decoder.dateDecodingStrategy = .iso8601
-                let object = try decoder.decode(T.self, from: response)
+                let object = try decoder.decode(T.self, from: responseData)
                 
                 threadCompletion(.success(object))
             } catch (let error as APIError) {
@@ -90,7 +112,7 @@ public class JSONAPI: API {
                         resource: String = "/",
                         headers: [String: String]? = nil,
                         params: [String: Any]? = nil,
-                        body: Data? = nil) throws -> Data {
+                        body: Data? = nil) throws -> URLRequest {
         
         let resourceURL = baseURL.appendingPathComponent(resource)
         
@@ -120,17 +142,6 @@ public class JSONAPI: API {
             }
         }
         
-        let (receivedData, response) = try urlSession.synchronousDataTask(with: request)
-        
-        guard let data = receivedData else {
-            throw APIError.invalidResponse
-        }
-        
-        guard let httpResponse = response as? HTTPURLResponse,
-            (200..<300).contains(httpResponse.statusCode) else {
-                throw APIError.notReachable
-        }
-        
-        return data
+        return request
     }
 }

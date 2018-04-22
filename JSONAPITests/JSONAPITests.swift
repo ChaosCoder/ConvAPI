@@ -75,14 +75,6 @@ class JSONAPITests: XCTestCase {
         XCTAssertNotNil(data)
     }
     
-    func testBadRequestRaw() {
-        let api = JSONAPI()
-        let url = URL(string: "https://httpbin.org")!
-        let resource = "/status/400"
-        let data = try? api.request(method: .GET, baseURL: url, resource: resource, headers: nil, params: nil, body: nil)
-        XCTAssertNil(data)
-    }
-    
     func testBadRequest() {
         let api = JSONAPI()
         let url = URL(string: "https://httpbin.org")!

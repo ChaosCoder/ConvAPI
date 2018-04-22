@@ -34,6 +34,7 @@ public protocol API {
                     headers: [String : String]?,
                     params: [String: Any]?,
                     body: U?,
+                    decorator: ((inout URLRequest) -> Void)?,
                     completion: @escaping ((APIError?) -> Void)) where U: Encodable
     
     func retrieve<T, U>(method: HTTPMethod,
@@ -42,6 +43,7 @@ public protocol API {
                         headers: [String : String]?,
                         params: [String: Any]?,
                         body: U?,
+                        decorator: ((inout URLRequest) -> Void)?,
                         completion: @escaping ((Result<T, APIError>) -> Void)) where T: Decodable, U: Encodable
 }
 
@@ -52,8 +54,9 @@ public extension API {
                  resource: String = "/",
                  headers: [String : String]? = nil,
                  params: [String: Any]? = nil,
+                 decorator: ((inout URLRequest) -> Void)? = nil,
                  completion: @escaping ((APIError?) -> Void)) {
-        trigger(method: method, baseURL: baseURL, resource: resource, headers: headers, params: params, body: nil as Empty?, completion: completion)
+        trigger(method: method, baseURL: baseURL, resource: resource, headers: headers, params: params, body: nil as Empty?, decorator: decorator, completion: completion)
     }
     
     func retrieve<T>(method: HTTPMethod,
@@ -61,8 +64,9 @@ public extension API {
                      resource: String = "/",
                      headers: [String : String]? = nil,
                      params: [String: Any]? = nil,
+                     decorator: ((inout URLRequest) -> Void)? = nil,
                      completion: @escaping ((Result<T, APIError>) -> Void)) where T: Decodable {
-        retrieve(method: method, baseURL: baseURL, resource: resource, headers: headers, params: params, body: nil as Empty?, completion: completion)
+        retrieve(method: method, baseURL: baseURL, resource: resource, headers: headers, params: params, body: nil as Empty?, decorator: decorator, completion: completion)
     }
 }
 
