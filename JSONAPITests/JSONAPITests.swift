@@ -10,6 +10,15 @@ import XCTest
 import Result
 @testable import JSONAPI
 
+struct MockRequester: SynchronousRequester {
+    let callback: (URLRequest) -> Void
+    
+    func synchronousDataTask(with urlRequest: URLRequest) throws -> (Data?, URLResponse?) {
+        callback(urlRequest)
+        return (nil, nil)
+    }
+}
+
 class JSONAPITests: XCTestCase {
     
     struct Post: Codable, Equatable {
@@ -103,6 +112,19 @@ class JSONAPITests: XCTestCase {
             }
             expect.fulfill()
         }
+        wait(for: [expect], timeout: 5)
+    }
+    
+    func testContentTypeHeader() {
+        let expect = self.expectation(description: "Completion")
+        let mockRequester = MockRequester { (request) in
+            XCTAssertEqual(request.value(forHTTPHeaderField: "Content-Type"), "application/json")
+            expect.fulfill()
+        }
+        
+        let url = URL(string: "https://example.org")!
+        let api = JSONAPI(requester: mockRequester)
+        api.trigger(method: HTTPMethod.GET, baseURL: url) { _ in }
         wait(for: [expect], timeout: 5)
     }
 }

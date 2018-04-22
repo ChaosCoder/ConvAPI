@@ -10,10 +10,10 @@ import Result
 
 public class JSONAPI: API {
     
-    var urlSession: URLSession
+    var requester: SynchronousRequester
     
-    public init(urlSession: URLSession = URLSession.shared) {
-        self.urlSession = urlSession
+    public init(requester: SynchronousRequester = URLSession.shared) {
+        self.requester = requester
     }
 
     public func trigger<U>(method: HTTPMethod,
@@ -41,7 +41,7 @@ public class JSONAPI: API {
                 })
                 var request = try self.request(method: method, baseURL: baseURL, resource: resource, headers: headers, params: params, body: data)
                 decorator?(&request)
-                let (_, response) = try self.urlSession.synchronousDataTask(with: request)
+                let (_, response) = try self.requester.synchronousDataTask(with: request)
                 
                 guard let httpResponse = response as? HTTPURLResponse,
                     (200..<300).contains(httpResponse.statusCode) else {
@@ -83,7 +83,7 @@ public class JSONAPI: API {
                 var request = try self.request(method: method, baseURL: baseURL, resource: resource, headers: headers, params: params, body: data)
                 decorator?(&request)
                 
-                let (receivedData, response) = try self.urlSession.synchronousDataTask(with: request)
+                let (receivedData, response) = try self.requester.synchronousDataTask(with: request)
                 
                 guard let responseData = receivedData else {
                     throw APIError.invalidResponse
@@ -135,6 +135,8 @@ public class JSONAPI: API {
         var request = URLRequest(url: url)
         request.httpMethod = method.rawValue
         request.httpBody = body
+        
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         
         if let headers = headers {
             for (key, value) in headers {

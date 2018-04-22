@@ -8,7 +8,11 @@
 
 import Foundation
 
-extension URLSession {
+public protocol SynchronousRequester {
+    func synchronousDataTask(with urlRequest: URLRequest) throws -> (Data?, URLResponse?)
+}
+
+extension URLSession: SynchronousRequester {
     public func synchronousDataTask(with urlRequest: URLRequest) throws -> (Data?, URLResponse?) {
         var data: Data?
         var response: URLResponse?
