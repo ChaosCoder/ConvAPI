@@ -10,7 +10,11 @@
 		2F9B46485515218277E7615E /* Pods_JSONAPITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C33CE0EB29FDC31EFD2585F /* Pods_JSONAPITests.framework */; };
 		70D343B403986C299BB056A6 /* Pods_JSONAPI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B735B5B5478C2C1F5112D63E /* Pods_JSONAPI.framework */; };
 		7D320DD32088FADC007C7DDE /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D320DD22088FADC007C7DDE /* API.swift */; };
-		7D42487720862F3200E44375 /* URLSession+Synchronous.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D42487620862F3200E44375 /* URLSession+Synchronous.swift */; };
+		7DBB740B2199C45A002C5B82 /* APIMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DBB74082199C45A002C5B82 /* APIMethod.swift */; };
+		7DBB740C2199C45A002C5B82 /* APIMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DBB74082199C45A002C5B82 /* APIMethod.swift */; };
+		7DBB740D2199C45A002C5B82 /* AsynchronousRequester.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DBB74092199C45A002C5B82 /* AsynchronousRequester.swift */; };
+		7DBB740F2199C45A002C5B82 /* APIError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DBB740A2199C45A002C5B82 /* APIError.swift */; };
+		7DBB74102199C45A002C5B82 /* APIError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DBB740A2199C45A002C5B82 /* APIError.swift */; };
 		7DDDFB2020839BD700F3426C /* JSONAPI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DDDFB1620839BD700F3426C /* JSONAPI.framework */; };
 		7DDDFB2520839BD700F3426C /* JSONAPITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DDDFB2420839BD700F3426C /* JSONAPITests.swift */; };
 		7DDDFB2720839BD700F3426C /* JSONAPI.h in Headers */ = {isa = PBXBuildFile; fileRef = 7DDDFB1920839BD700F3426C /* JSONAPI.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -32,7 +36,9 @@
 		2C33CE0EB29FDC31EFD2585F /* Pods_JSONAPITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_JSONAPITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4CA00CB0209C9D3F50C4E54F /* Pods-JSONAPITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-JSONAPITests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-JSONAPITests/Pods-JSONAPITests.debug.xcconfig"; sourceTree = "<group>"; };
 		7D320DD22088FADC007C7DDE /* API.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = API.swift; sourceTree = "<group>"; };
-		7D42487620862F3200E44375 /* URLSession+Synchronous.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URLSession+Synchronous.swift"; sourceTree = "<group>"; };
+		7DBB74082199C45A002C5B82 /* APIMethod.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIMethod.swift; sourceTree = "<group>"; };
+		7DBB74092199C45A002C5B82 /* AsynchronousRequester.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AsynchronousRequester.swift; sourceTree = "<group>"; };
+		7DBB740A2199C45A002C5B82 /* APIError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIError.swift; sourceTree = "<group>"; };
 		7DDDFB1620839BD700F3426C /* JSONAPI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = JSONAPI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		7DDDFB1920839BD700F3426C /* JSONAPI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JSONAPI.h; sourceTree = "<group>"; };
 		7DDDFB1A20839BD700F3426C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -98,10 +104,12 @@
 		7DDDFB1820839BD700F3426C /* JSONAPI */ = {
 			isa = PBXGroup;
 			children = (
+				7DBB740A2199C45A002C5B82 /* APIError.swift */,
+				7DBB74082199C45A002C5B82 /* APIMethod.swift */,
+				7DBB74092199C45A002C5B82 /* AsynchronousRequester.swift */,
 				7DDDFB1920839BD700F3426C /* JSONAPI.h */,
 				7DDDFB3020839BF500F3426C /* JSONAPI.swift */,
 				7D320DD22088FADC007C7DDE /* API.swift */,
-				7D42487620862F3200E44375 /* URLSession+Synchronous.swift */,
 				7DDDFB1A20839BD700F3426C /* Info.plist */,
 			);
 			path = JSONAPI;
@@ -328,9 +336,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7D42487720862F3200E44375 /* URLSession+Synchronous.swift in Sources */,
 				7D320DD32088FADC007C7DDE /* API.swift in Sources */,
 				7DDDFB3120839BF500F3426C /* JSONAPI.swift in Sources */,
+				7DBB740D2199C45A002C5B82 /* AsynchronousRequester.swift in Sources */,
+				7DBB740F2199C45A002C5B82 /* APIError.swift in Sources */,
+				7DBB740B2199C45A002C5B82 /* APIMethod.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -338,7 +348,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7DBB74102199C45A002C5B82 /* APIError.swift in Sources */,
 				7DDDFB2520839BD700F3426C /* JSONAPITests.swift in Sources */,
+				7DBB740C2199C45A002C5B82 /* APIMethod.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

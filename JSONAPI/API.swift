@@ -9,65 +9,49 @@
 import Foundation
 import Result
 
-public enum APIError: Error {
-    case notReachable
+public enum RequestError<E>: Error where E: Decodable & Error {
     case invalidRequest
-    case invalidResponse
-    case underlying(Error)
-}
-
-public enum HTTPMethod: String {
-    case GET
-    case POST
-    case DELETE
-    case PUT
-    case HEAD
-    case OPTIONS
-    case TRACE
+    case encodingError
+    case invalidHTTPResponse
+    case invalidJSONResponse(httpStatusCode: Int, body: Data?)
+    case unexpectedEmptyResponse
+    case decodingError
+    case applicationError(E)
 }
 
 public protocol API {
-    
-    func trigger<U>(method: HTTPMethod,
+
+    func request<T, U, E>(method: APIMethod,
                     baseURL: URL,
                     resource: String,
-                    headers: [String : String]?,
+                    headers: [String: String]?,
                     params: [String: Any]?,
-                    body: U?,
+                    body: T?,
                     decorator: ((inout URLRequest) -> Void)?,
-                    completion: @escaping ((APIError?) -> Void)) where U: Encodable
-    
-    func retrieve<T, U>(method: HTTPMethod,
-                        baseURL: URL,
-                        resource: String,
-                        headers: [String : String]?,
-                        params: [String: Any]?,
-                        body: U?,
-                        decorator: ((inout URLRequest) -> Void)?,
-                        completion: @escaping ((Result<T, APIError>) -> Void)) where T: Decodable, U: Encodable
+                    completion: @escaping ((Result<U, RequestError<E>>) -> Void)) where T: Encodable, U: Decodable, E: Decodable & Error
+}
+
+protocol Empty: Codable {
+    init()
 }
 
 public extension API {
-    
-    func trigger(method: HTTPMethod,
+
+    func request<U, E>(method: APIMethod,
                  baseURL: URL,
                  resource: String = "/",
-                 headers: [String : String]? = nil,
+                 headers: [String: String]? = nil,
                  params: [String: Any]? = nil,
                  decorator: ((inout URLRequest) -> Void)? = nil,
-                 completion: @escaping ((APIError?) -> Void)) {
-        trigger(method: method, baseURL: baseURL, resource: resource, headers: headers, params: params, body: nil as Empty?, decorator: decorator, completion: completion)
-    }
-    
-    func retrieve<T>(method: HTTPMethod,
-                     baseURL: URL,
-                     resource: String = "/",
-                     headers: [String : String]? = nil,
-                     params: [String: Any]? = nil,
-                     decorator: ((inout URLRequest) -> Void)? = nil,
-                     completion: @escaping ((Result<T, APIError>) -> Void)) where T: Decodable {
-        retrieve(method: method, baseURL: baseURL, resource: resource, headers: headers, params: params, body: nil as Empty?, decorator: decorator, completion: completion)
+                 completion: @escaping ((Result<U, RequestError<E>>) -> Void)) where U: Decodable, E: Decodable & Error {
+
+        request(method: method,
+                baseURL: baseURL,
+                resource: resource,
+                headers: headers,
+                params: params,
+                body: nil as Bool?,
+                decorator: decorator,
+                completion: completion)
     }
 }
-
-private struct Empty: Encodable {}
