@@ -13,8 +13,6 @@
 		7DBB740B2199C45A002C5B82 /* APIMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DBB74082199C45A002C5B82 /* APIMethod.swift */; };
 		7DBB740C2199C45A002C5B82 /* APIMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DBB74082199C45A002C5B82 /* APIMethod.swift */; };
 		7DBB740D2199C45A002C5B82 /* AsynchronousRequester.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DBB74092199C45A002C5B82 /* AsynchronousRequester.swift */; };
-		7DBB740F2199C45A002C5B82 /* APIError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DBB740A2199C45A002C5B82 /* APIError.swift */; };
-		7DBB74102199C45A002C5B82 /* APIError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DBB740A2199C45A002C5B82 /* APIError.swift */; };
 		7DDDFB2020839BD700F3426C /* JSONAPI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DDDFB1620839BD700F3426C /* JSONAPI.framework */; };
 		7DDDFB2520839BD700F3426C /* JSONAPITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DDDFB2420839BD700F3426C /* JSONAPITests.swift */; };
 		7DDDFB2720839BD700F3426C /* JSONAPI.h in Headers */ = {isa = PBXBuildFile; fileRef = 7DDDFB1920839BD700F3426C /* JSONAPI.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -38,7 +36,6 @@
 		7D320DD22088FADC007C7DDE /* API.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = API.swift; sourceTree = "<group>"; };
 		7DBB74082199C45A002C5B82 /* APIMethod.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIMethod.swift; sourceTree = "<group>"; };
 		7DBB74092199C45A002C5B82 /* AsynchronousRequester.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AsynchronousRequester.swift; sourceTree = "<group>"; };
-		7DBB740A2199C45A002C5B82 /* APIError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIError.swift; sourceTree = "<group>"; };
 		7DDDFB1620839BD700F3426C /* JSONAPI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = JSONAPI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		7DDDFB1920839BD700F3426C /* JSONAPI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JSONAPI.h; sourceTree = "<group>"; };
 		7DDDFB1A20839BD700F3426C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -104,7 +101,6 @@
 		7DDDFB1820839BD700F3426C /* JSONAPI */ = {
 			isa = PBXGroup;
 			children = (
-				7DBB740A2199C45A002C5B82 /* APIError.swift */,
 				7DBB74082199C45A002C5B82 /* APIMethod.swift */,
 				7DBB74092199C45A002C5B82 /* AsynchronousRequester.swift */,
 				7DDDFB1920839BD700F3426C /* JSONAPI.h */,
@@ -339,7 +335,6 @@
 				7D320DD32088FADC007C7DDE /* API.swift in Sources */,
 				7DDDFB3120839BF500F3426C /* JSONAPI.swift in Sources */,
 				7DBB740D2199C45A002C5B82 /* AsynchronousRequester.swift in Sources */,
-				7DBB740F2199C45A002C5B82 /* APIError.swift in Sources */,
 				7DBB740B2199C45A002C5B82 /* APIMethod.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -348,7 +343,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7DBB74102199C45A002C5B82 /* APIError.swift in Sources */,
 				7DDDFB2520839BD700F3426C /* JSONAPITests.swift in Sources */,
 				7DBB740C2199C45A002C5B82 /* APIMethod.swift in Sources */,
 			);

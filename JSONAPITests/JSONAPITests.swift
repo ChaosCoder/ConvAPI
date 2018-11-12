@@ -21,6 +21,11 @@ struct MockRequester: AsynchronousRequester {
 
 struct EmptyAPIResponse: Codable {}
 
+struct APIError: Codable, Error {
+    let code: Int
+    let message: String
+}
+
 typealias EmptyAPIResult = Result<EmptyAPIResponse, RequestError<APIError>>
 typealias APIResult<T> = Result<T, RequestError<APIError>> where T: Codable
 
@@ -65,13 +70,13 @@ class JSONAPITests: XCTestCase {
     func testBadRequestError() {
         let api = JSONAPI()
         let url = URL(string: "https://putsreq.com")!
-        let expectedError = APIError.init(type: .test, description: "Test")
+        let expectedError = APIError(code: 1, message: "Test")
         
         let expect = self.expectation(description: "Completion")
         api.request(method: .POST, baseURL: url, resource: "/doZHFUeg6eYyongfpTZg", headers: ["X-HTTP-STATUS": "400"], body: expectedError) { (response: EmptyAPIResult) in
             if case .failure(let requestError) = response,
                 case .applicationError(let error) = requestError {
-                XCTAssertEqual(error.type, .test)
+                XCTAssertEqual(error.code, 1)
             } else {
                 XCTFail()
             }
