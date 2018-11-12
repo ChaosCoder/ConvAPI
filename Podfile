@@ -6,7 +6,7 @@ target 'JSONAPI' do
   use_frameworks!
 
   # Pods for JSONAPI
-  pod 'Result', '~> 3.0'
+  pod 'Result', '~> 4.0'
 
   target 'JSONAPITests' do
     inherit! :search_paths
