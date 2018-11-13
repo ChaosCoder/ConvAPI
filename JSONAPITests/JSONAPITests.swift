@@ -19,7 +19,7 @@ struct MockRequester: AsynchronousRequester {
     }
 }
 
-struct EmptyAPIResponse: Codable {}
+struct EmptyAPIResponse: Codable, Empty {}
 
 struct APIError: Codable, Error {
     let code: Int
@@ -41,7 +41,7 @@ class JSONAPITests: XCTestCase {
         let response = EmptyAPIResponse()
         
         let expect = self.expectation(description: "Completion")
-        api.request(method: .POST, baseURL: url, resource: "/post", body: response) { (response: EmptyAPIResult) in
+        api.request(method: .POST, baseURL: url, resource: "/status/204", body: response) { (response: EmptyAPIResult) in
             guard case .success(_) = response else { return XCTFail() }
             expect.fulfill()
         }

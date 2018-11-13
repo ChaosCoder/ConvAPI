@@ -9,16 +9,6 @@
 import Foundation
 import Result
 
-public enum RequestError<E>: Error where E: Decodable & Error {
-    case invalidRequest
-    case encodingError
-    case invalidHTTPResponse
-    case invalidJSONResponse(httpStatusCode: Int, body: Data?)
-    case unexpectedEmptyResponse
-    case decodingError
-    case applicationError(E)
-}
-
 public protocol API {
 
     func request<T, U, E>(method: APIMethod,
@@ -31,7 +21,7 @@ public protocol API {
                     completion: @escaping ((Result<U, RequestError<E>>) -> Void)) where T: Encodable, U: Decodable, E: Decodable & Error
 }
 
-protocol Empty: Codable {
+public protocol Empty: Codable {
     init()
 }
 

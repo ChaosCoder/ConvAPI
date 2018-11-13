@@ -14,6 +14,16 @@ struct JSONAPIError: Error, Codable {
     let description: String
 }
 
+public enum RequestError<E>: Error where E: Decodable & Error {
+    case invalidRequest
+    case encodingError
+    case invalidHTTPResponse
+    case invalidJSONResponse(httpStatusCode: Int, body: Data?)
+    case emptyResponse
+    case decodingError
+    case applicationError(E)
+}
+
 public class JSONAPI: API {
 
     var requester: AsynchronousRequester
@@ -21,15 +31,44 @@ public class JSONAPI: API {
     public init(requester: AsynchronousRequester = URLSession.shared) {
         self.requester = requester
     }
+    
+    public func request<T, U, E>(method: APIMethod,
+                                 baseURL: URL,
+                                 resource: String = "/",
+                                 headers: [String: String]? = nil,
+                                 params: [String: Any]? = nil,
+                                 body: T? = nil,
+                                 decorator: ((inout URLRequest) -> Void)? = nil,
+                                 completion: @escaping ((Result<U, RequestError<E>>) -> Void)) where T: Encodable, U: Empty & Decodable, E: Decodable & Error {
+        internalRequest(method: method, baseURL: baseURL, resource: resource, headers: headers, params: params, body: body, decorator: decorator, completion: { (result: Result<U, RequestError<E>>) in
+            switch result {
+            case .failure(.emptyResponse):
+                completion(.success(U()))
+            default:
+                completion(result)
+            }
+        })
+    }
 
     public func request<T, U, E>(method: APIMethod,
-                           baseURL: URL,
-                           resource: String = "/",
-                           headers: [String: String]? = nil,
-                           params: [String: Any]? = nil,
-                           body: T? = nil,
-                           decorator: ((inout URLRequest) -> Void)? = nil,
-                           completion: @escaping ((Result<U, RequestError<E>>) -> Void)) where T: Encodable, U: Decodable, E: Decodable & Error {
+                                 baseURL: URL,
+                                 resource: String = "/",
+                                 headers: [String: String]? = nil,
+                                 params: [String: Any]? = nil,
+                                 body: T? = nil,
+                                 decorator: ((inout URLRequest) -> Void)? = nil,
+                                 completion: @escaping ((Result<U, RequestError<E>>) -> Void)) where T: Encodable, U: Decodable, E: Decodable & Error {
+        internalRequest(method: method, baseURL: baseURL, resource: resource, headers: headers, params: params, body: body, decorator: decorator, completion: completion)
+    }
+    
+    private func internalRequest<T, U, E>(method: APIMethod,
+                                          baseURL: URL,
+                                          resource: String = "/",
+                                          headers: [String: String]? = nil,
+                                          params: [String: Any]? = nil,
+                                          body: T? = nil,
+                                          decorator: ((inout URLRequest) -> Void)? = nil,
+                                          completion: @escaping ((Result<U, RequestError<E>>) -> Void)) where T: Encodable, U: Decodable, E: Decodable & Error {
         let data: Data?
         if let body = body {
             let encoder = JSONEncoder()
@@ -41,36 +80,38 @@ public class JSONAPI: API {
         } else {
             data = nil
         }
-
+        
         guard var request = try? self.request(method: method, baseURL: baseURL, resource: resource, headers: headers, params: params, body: data) else {
             return completion(.failure(.invalidRequest))
         }
         decorator?(&request)
-
+        
         let dataTask = requester.dataTask(with: request) { data, response, error in
             let decoder = JSONDecoder()
             decoder.dateDecodingStrategy = .iso8601
-
+            
             guard let httpResponse = response as? HTTPURLResponse else {
                 return completion(.failure(.invalidHTTPResponse))
             }
-
-            guard let responseData = data else {
-                return completion(.failure(.unexpectedEmptyResponse))
-            }
-
+            
             guard (200..<300).contains(httpResponse.statusCode) else {
-                guard let error = try? decoder.decode(E.self, from: responseData) else {
+                guard let responseData = data,
+                    let appError = try? decoder.decode(E.self, from: responseData) else {
                     return completion(.failure(.invalidJSONResponse(httpStatusCode: httpResponse.statusCode, body: data)))
                 }
-                return completion(.failure(.applicationError(error)))
+                return completion(.failure(.applicationError(appError)))
             }
-
-            guard let response = try? decoder.decode(U.self, from: responseData) else {
+            
+            guard let responseData = data,
+                !responseData.isEmpty else {
+                    return completion(.failure(.emptyResponse))
+            }
+            
+            guard let result = try? decoder.decode(U.self, from: responseData) else {
                 return completion(.failure(.decodingError))
             }
-
-            completion(.success(response))
+            
+            completion(.success(result))
         }
         dataTask.resume()
     }
