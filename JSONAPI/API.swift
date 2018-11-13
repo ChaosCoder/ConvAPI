@@ -19,6 +19,15 @@ public protocol API {
                     body: T?,
                     decorator: ((inout URLRequest) -> Void)?,
                     completion: @escaping ((Result<U, RequestError<E>>) -> Void)) where T: Encodable, U: Decodable, E: Decodable & Error
+    
+    func request<T, E>(method: APIMethod,
+                       baseURL: URL,
+                       resource: String,
+                       headers: [String: String]?,
+                       params: [String: Any]?,
+                       body: T?,
+                       decorator: ((inout URLRequest) -> Void)?,
+                       completion: @escaping (RequestError<E>?) -> Void) where T: Encodable, E: Decodable & Error
 }
 
 public protocol Empty: Codable {
@@ -43,5 +52,34 @@ public extension API {
                 body: nil as Bool?,
                 decorator: decorator,
                 completion: completion)
+    }
+    
+    func request<T, E>(method: APIMethod,
+                              baseURL: URL,
+                              resource: String = "/",
+                              headers: [String: String]? = nil,
+                              params: [String: Any]? = nil,
+                              body: T? = nil,
+                              decorator: ((inout URLRequest) -> Void)? = nil,
+                              completion: @escaping (RequestError<E>?) -> Void) where T: Encodable, E: Decodable & Error {
+        request(method: method,
+                baseURL: baseURL,
+                resource: resource,
+                headers: headers,
+                params: params,
+                body: body,
+                decorator: decorator,
+                completion: { (result: Result<EmptyResponse, RequestError<E>>) in
+            switch result {
+            case .success(_):
+                completion(nil)
+            case .failure(let error):
+                if case .emptyResponse = error {
+                    completion(nil)
+                } else {
+                    completion(error)
+                }
+            }
+        })
     }
 }

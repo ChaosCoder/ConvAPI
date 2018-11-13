@@ -24,6 +24,10 @@ public enum RequestError<E>: Error where E: Decodable & Error {
     case applicationError(E)
 }
 
+public struct EmptyResponse: Empty {
+    public init() {}
+}
+
 public class JSONAPI: API {
 
     var requester: AsynchronousRequester
@@ -33,42 +37,13 @@ public class JSONAPI: API {
     }
     
     public func request<T, U, E>(method: APIMethod,
-                                 baseURL: URL,
-                                 resource: String = "/",
-                                 headers: [String: String]? = nil,
-                                 params: [String: Any]? = nil,
-                                 body: T? = nil,
-                                 decorator: ((inout URLRequest) -> Void)? = nil,
-                                 completion: @escaping ((Result<U, RequestError<E>>) -> Void)) where T: Encodable, U: Empty & Decodable, E: Decodable & Error {
-        internalRequest(method: method, baseURL: baseURL, resource: resource, headers: headers, params: params, body: body, decorator: decorator, completion: { (result: Result<U, RequestError<E>>) in
-            switch result {
-            case .failure(.emptyResponse):
-                completion(.success(U()))
-            default:
-                completion(result)
-            }
-        })
-    }
-
-    public func request<T, U, E>(method: APIMethod,
-                                 baseURL: URL,
-                                 resource: String = "/",
-                                 headers: [String: String]? = nil,
-                                 params: [String: Any]? = nil,
-                                 body: T? = nil,
-                                 decorator: ((inout URLRequest) -> Void)? = nil,
-                                 completion: @escaping ((Result<U, RequestError<E>>) -> Void)) where T: Encodable, U: Decodable, E: Decodable & Error {
-        internalRequest(method: method, baseURL: baseURL, resource: resource, headers: headers, params: params, body: body, decorator: decorator, completion: completion)
-    }
-    
-    private func internalRequest<T, U, E>(method: APIMethod,
-                                          baseURL: URL,
-                                          resource: String = "/",
-                                          headers: [String: String]? = nil,
-                                          params: [String: Any]? = nil,
-                                          body: T? = nil,
-                                          decorator: ((inout URLRequest) -> Void)? = nil,
-                                          completion: @escaping ((Result<U, RequestError<E>>) -> Void)) where T: Encodable, U: Decodable, E: Decodable & Error {
+                                  baseURL: URL,
+                                  resource: String = "/",
+                                  headers: [String: String]? = nil,
+                                  params: [String: Any]? = nil,
+                                  body: T? = nil,
+                                  decorator: ((inout URLRequest) -> Void)? = nil,
+                                  completion: @escaping ((Result<U, RequestError<E>>) -> Void)) where T: Encodable, U: Decodable, E: Decodable & Error {
         let data: Data?
         if let body = body {
             let encoder = JSONEncoder()
