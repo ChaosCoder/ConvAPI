@@ -97,10 +97,9 @@ public class JSONAPI: API {
                         headers: [String: String]? = nil,
                         params: [String: Any]? = nil,
                         body: Data? = nil) throws -> URLRequest {
-
-        let resourceURL = baseURL.appendingPathComponent(resource)
-
-        guard var urlComponents = URLComponents(url: resourceURL, resolvingAgainstBaseURL: false) else {
+        
+        guard let resourceURL = URL(string: baseURL.absoluteString + resource),
+            var urlComponents = URLComponents(url: resourceURL, resolvingAgainstBaseURL: false) else {
             throw RequestError<JSONAPIError>.invalidRequest
         }
 

@@ -26,23 +26,21 @@ struct APIError: Codable, Error {
     let message: String
 }
 
-typealias EmptyAPIResult = Result<EmptyAPIResponse, RequestError<APIError>>
 typealias APIResult<T> = Result<T, RequestError<APIError>> where T: Codable
 
 class JSONAPITests: XCTestCase {
+    
+    let api = JSONAPI()
+    let url = URL(string: "https://jsonapitestserver.herokuapp.com")!
     
     struct Post: Codable, Equatable {
         let name: String
     }
     
     func testPostWithEmptyResponse() {
-        let api = JSONAPI()
-        let url = URL(string: "https://httpbin.org")!
-        let response = EmptyAPIResponse()
-        
         let expect = self.expectation(description: "Completion")
-        api.request(method: .POST, baseURL: url, resource: "/status/204", body: response) { (response: EmptyAPIResult) in
-            guard case .success(_) = response else { return XCTFail() }
+        api.request(method: .POST, baseURL: url, resource: "/post") { (error: RequestError<APIError>?) in
+            XCTAssertNil(error)
             expect.fulfill()
         }
         
@@ -50,36 +48,29 @@ class JSONAPITests: XCTestCase {
     }
     
     func testInternalServerError() {
-        let api = JSONAPI()
-        let url = URL(string: "https://httpbin.org")!
-        
         let expect = self.expectation(description: "Completion")
-        api.request(method: .GET, baseURL: url, resource: "/status/500") { (response: EmptyAPIResult) in
-            if case .failure(let receivedError) = response,
-                case .invalidJSONResponse(let statusCode, _) = receivedError {
-                XCTAssertEqual(statusCode, 500)
-                expect.fulfill()
-            } else {
-                XCTFail()
+        api.request(method: .GET, baseURL: url, resource: "/get", headers: ["X-HTTP-STATUS": "500"]) { (error: RequestError<APIError>?) in
+            XCTAssertNotNil(error)
+            guard case .some(.invalidJSONResponse(let statusCode, _)) = error else {
+                return XCTFail()
             }
+            XCTAssertEqual(statusCode, 500)
+            expect.fulfill()
         }
         
         wait(for: [expect], timeout: 5)
     }
     
     func testBadRequestError() {
-        let api = JSONAPI()
-        let url = URL(string: "https://putsreq.com")!
         let expectedError = APIError(code: 1, message: "Test")
         
         let expect = self.expectation(description: "Completion")
-        api.request(method: .POST, baseURL: url, resource: "/doZHFUeg6eYyongfpTZg", headers: ["X-HTTP-STATUS": "400"], body: expectedError) { (response: EmptyAPIResult) in
-            if case .failure(let requestError) = response,
-                case .applicationError(let error) = requestError {
-                XCTAssertEqual(error.code, 1)
-            } else {
-                XCTFail()
+        api.request(method: .POST, baseURL: url, resource: "/post", headers: ["X-HTTP-STATUS": "400"], body: expectedError) { (requestError: RequestError<APIError>?) in
+            XCTAssertNotNil(requestError)
+            guard case .some(.applicationError(let error)) = requestError else {
+                return XCTFail()
             }
+            XCTAssertEqual(error.code, 1)
             expect.fulfill()
         }
         
@@ -87,13 +78,10 @@ class JSONAPITests: XCTestCase {
     }
     
     func testPost() {
-        let api = JSONAPI()
-        
         let post = Post(name: "example")
-        let url = URL(string: "https://putsreq.com")!
         
         let expect = self.expectation(description: "Completion")
-        api.request(method: .POST, baseURL: url, resource: "/UacIEbxTHVIVaHDho9hu", body: post) { (result: APIResult<Post>) in
+        api.request(method: .POST, baseURL: url, resource: "/post", body: post) { (result: APIResult<Post>) in
             if case let .success(object) = result {
                 XCTAssertEqual(object, post)
                 expect.fulfill()
@@ -106,13 +94,10 @@ class JSONAPITests: XCTestCase {
     }
     
     func testGet() {
-        let api = JSONAPI()
-        
-        let url = URL(string: "https://putsreq.com")!
         let post = Post(name: "test")
         let expect = self.expectation(description: "Completion")
         
-        api.request(method: .GET, baseURL: url, resource: "/UacIEbxTHVIVaHDho9hu") { (result: APIResult<Post>) in
+        api.request(method: .GET, baseURL: url, resource: "/get?name=test") { (result: APIResult<Post>) in
             if case let .success(object) = result {
                 XCTAssertEqual(object, post)
                 expect.fulfill()
@@ -124,11 +109,8 @@ class JSONAPITests: XCTestCase {
     }
     
     func testBadRequest() {
-        let api = JSONAPI()
-        let url = URL(string: "https://httpbin.org")!
-        let resource = "/status/400"
         let expect = self.expectation(description: "Completion")
-        api.request(method: .GET, baseURL: url, resource: resource) { (result: APIResult<Post>) in
+        api.request(method: .GET, baseURL: url, resource: "/get", headers: ["X-HTTP-STATUS": "400"]) { (result: APIResult<Post>) in
             if case .success(_) = result { XCTFail() }
             expect.fulfill()
         }
@@ -136,15 +118,10 @@ class JSONAPITests: XCTestCase {
     }
     
     func testComplexRedirection() {
-        let api = JSONAPI()
-        
-        let url = URL(string: "https://httpbin.org")!
-        let resource = "/redirect-to"
-        let params: [String: Any] = ["url": "https://putsreq.com/UacIEbxTHVIVaHDho9hu?name=test"]
-        
+        let headers = ["X-LOCATION": "https://jsonapitestserver.herokuapp.com/get?name=test"]
         let post = Post(name: "test")
         let expect = self.expectation(description: "Completion")
-        api.request(method: .GET, baseURL: url, resource: resource, params: params) { (result: APIResult<Post>) in
+        api.request(method: .GET, baseURL: url, resource: "/redirect", headers: headers) { (result: APIResult<Post>) in
             if case let .success(object) = result {
                 XCTAssertEqual(object, post)
             } else {
@@ -162,9 +139,8 @@ class JSONAPITests: XCTestCase {
             expect.fulfill()
         }
         
-        let url = URL(string: "https://example.org")!
         let api = JSONAPI(requester: mockRequester)
-        api.request(method: .GET, baseURL: url) { (_: EmptyAPIResult) in }
+        api.request(method: .GET, baseURL: url) { (_: RequestError<APIError>?) in }
         wait(for: [expect], timeout: 5)
     }
 }

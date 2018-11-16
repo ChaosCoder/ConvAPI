@@ -54,6 +54,23 @@ public extension API {
                 completion: completion)
     }
     
+    func request<E>(method: APIMethod,
+                       baseURL: URL,
+                       resource: String = "/",
+                       headers: [String: String]? = nil,
+                       params: [String: Any]? = nil,
+                       decorator: ((inout URLRequest) -> Void)? = nil,
+                       completion: @escaping (RequestError<E>?) -> Void) where E: Decodable & Error {
+        request(method: method,
+                baseURL: baseURL,
+                resource: resource,
+                headers: headers,
+                params: params,
+                body: nil as Bool?,
+                decorator: decorator,
+                completion: completion)
+    }
+    
     func request<T, E>(method: APIMethod,
                               baseURL: URL,
                               resource: String = "/",
