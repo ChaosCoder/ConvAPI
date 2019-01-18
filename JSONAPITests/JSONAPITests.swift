@@ -37,6 +37,11 @@ class JSONAPITests: XCTestCase {
         let name: String
     }
     
+    struct PostWithDate: Codable, Equatable {
+        let name: String
+        let date: Date
+    }
+    
     func testPostWithEmptyResponse() {
         let expect = self.expectation(description: "Completion")
         api.request(method: .POST, baseURL: url, resource: "/post") { (error: RequestError<APIError>?) in
@@ -143,4 +148,49 @@ class JSONAPITests: XCTestCase {
         api.request(method: .GET, baseURL: url) { (_: RequestError<APIError>?) in }
         wait(for: [expect], timeout: 5)
     }
+    
+    func test8601DateEncoding() {
+        
+        struct RawPostWithDate: Codable {
+            let name: String
+            let date: String
+        }
+        
+        let expect = self.expectation(description: "Completion")
+        let mockRequester = MockRequester { request in
+            let body = request.httpBody!
+            let decoded = try! JSONDecoder().decode(RawPostWithDate.self, from: body)
+            XCTAssertEqual(decoded.date, "2019-01-18T12:10:28Z")
+            expect.fulfill()
+        }
+        
+        let post = PostWithDate(name: "Test", date: Date(timeIntervalSince1970: 1547813428))
+        let api = JSONAPI(requester: mockRequester)
+        api.request(method: .POST, baseURL: url, body: post) { (_: RequestError<APIError>?) in }
+        wait(for: [expect], timeout: 5)
+    }
+    
+    func testAlternativeDateEncoding() {
+        
+        struct RawPostWithDate: Codable {
+            let name: String
+            let date: TimeInterval
+        }
+
+        let secondsSince1970: TimeInterval = 1547813428
+        let expect = self.expectation(description: "Completion")
+        let mockRequester = MockRequester { request in
+            let body = request.httpBody!
+            let decoded = try! JSONDecoder().decode(RawPostWithDate.self, from: body)
+            XCTAssertEqual(decoded.date, secondsSince1970)
+            expect.fulfill()
+        }
+        
+        let post = PostWithDate(name: "Test", date: Date(timeIntervalSince1970: secondsSince1970))
+        let api = JSONAPI(requester: mockRequester)
+        api.encoder.dateEncodingStrategy = .secondsSince1970
+        api.request(method: .POST, baseURL: url, body: post) { (_: RequestError<APIError>?) in }
+        wait(for: [expect], timeout: 5)
+    }
 }
+

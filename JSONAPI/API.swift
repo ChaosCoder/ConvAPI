@@ -11,6 +11,9 @@ import Result
 
 public protocol API {
 
+    var encoder: JSONEncoder { get set }
+    var decoder: JSONDecoder { get set }
+    
     func request<T, U, E>(method: APIMethod,
                     baseURL: URL,
                     resource: String,

@@ -31,6 +31,17 @@ public struct EmptyResponse: Empty {
 public class JSONAPI: API {
 
     var requester: AsynchronousRequester
+    
+    public lazy var encoder: JSONEncoder = {
+        let encoder = JSONEncoder()
+        encoder.dateEncodingStrategy = .iso8601
+        return encoder
+    }()
+    public lazy var decoder: JSONDecoder = {
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        return decoder
+    }()
 
     public init(requester: AsynchronousRequester = URLSession.shared) {
         self.requester = requester
@@ -46,8 +57,6 @@ public class JSONAPI: API {
                                   completion: @escaping ((Result<U, RequestError<E>>) -> Void)) where T: Encodable, U: Decodable, E: Decodable & Error {
         let data: Data?
         if let body = body {
-            let encoder = JSONEncoder()
-            encoder.dateEncodingStrategy = .iso8601
             guard let encodedBody = try? encoder.encode(body) else {
                 return completion(.failure(.encodingError))
             }
@@ -62,16 +71,13 @@ public class JSONAPI: API {
         decorator?(&request)
         
         let dataTask = requester.dataTask(with: request) { data, response, error in
-            let decoder = JSONDecoder()
-            decoder.dateDecodingStrategy = .iso8601
-            
             guard let httpResponse = response as? HTTPURLResponse else {
                 return completion(.failure(.invalidHTTPResponse))
             }
             
             guard (200..<300).contains(httpResponse.statusCode) else {
                 guard let responseData = data,
-                    let appError = try? decoder.decode(E.self, from: responseData) else {
+                    let appError = try? self.decoder.decode(E.self, from: responseData) else {
                     return completion(.failure(.invalidJSONResponse(httpStatusCode: httpResponse.statusCode, body: data)))
                 }
                 return completion(.failure(.applicationError(appError)))
@@ -82,7 +88,7 @@ public class JSONAPI: API {
                     return completion(.failure(.emptyResponse))
             }
             
-            guard let result = try? decoder.decode(U.self, from: responseData) else {
+            guard let result = try? self.decoder.decode(U.self, from: responseData) else {
                 return completion(.failure(.decodingError))
             }
             
