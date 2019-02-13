@@ -91,7 +91,3 @@ xcuserdata
 
 
 # End of https://www.gitignore.io/api/xcode,swift,cocoapods,swiftpackagemanager
-JSONAPI.xcworkspace/contents.xcworkspacedata
-JSONAPI.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist
-JSONAPI.xcodeproj/project.xcworkspace/contents.xcworkspacedata
-JSONAPI.xcodeproj/project.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist
