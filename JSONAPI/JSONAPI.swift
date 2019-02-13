@@ -22,6 +22,18 @@ public enum RequestError<E>: Error where E: Decodable & Error {
     case emptyResponse
     case decodingError
     case applicationError(E)
+
+    public var localizedDescription: String {
+        switch self {
+        case .invalidRequest: return "Invalid request"
+        case .encodingError: return "Encoding error"
+        case .invalidHTTPResponse: return "Invalid http response"
+        case .invalidJSONResponse(let httpStatusCode, let body): return "Invalid JSON response with status code \(httpStatusCode) and body \(body.debugDescription)"
+        case .emptyResponse: return "Empty response"
+        case .decodingError: return "Decoding error"
+        case .applicationError(let appError): return "Application error: \(appError.localizedDescription)"
+        }
+    }
 }
 
 public struct EmptyResponse: Empty {
