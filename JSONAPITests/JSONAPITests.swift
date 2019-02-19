@@ -65,6 +65,11 @@ class JSONAPITests: XCTestCase {
         
         wait(for: [expect], timeout: 5)
     }
+
+    func testErrorDescription() {
+        let error: Error = RequestError<APIError>.invalidRequest
+        XCTAssertEqual(error.localizedDescription, "Invalid request")
+    }
     
     func testBadRequestError() {
         let expectedError = APIError(code: 1, message: "Test")

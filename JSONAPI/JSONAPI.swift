@@ -14,6 +14,12 @@ struct JSONAPIError: Error, Codable {
     let description: String
 }
 
+extension JSONAPIError: LocalizedError {
+    var errorDescription: String? {
+        return description
+    }
+}
+
 public enum RequestError<E>: Error where E: Decodable & Error {
     case invalidRequest
     case encodingError
@@ -22,8 +28,10 @@ public enum RequestError<E>: Error where E: Decodable & Error {
     case emptyResponse
     case decodingError
     case applicationError(E)
+}
 
-    public var localizedDescription: String {
+extension RequestError: LocalizedError {
+    public var errorDescription: String? {
         switch self {
         case .invalidRequest: return "Invalid request"
         case .encodingError: return "Encoding error"
