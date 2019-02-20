@@ -75,10 +75,16 @@ public class JSONAPI: API {
                                   body: T? = nil,
                                   decorator: ((inout URLRequest) -> Void)? = nil,
                                   completion: @escaping ((Result<U, RequestError<E>>) -> Void)) where T: Encodable, U: Decodable, E: Decodable & Error {
+        let asyncCompletion: (Result<U, RequestError<E>>) -> Void = { result in
+            DispatchQueue.global().async {
+                completion(result)
+            }
+        }
+
         let data: Data?
         if let body = body {
             guard let encodedBody = try? encoder.encode(body) else {
-                return completion(.failure(.encodingError))
+                return asyncCompletion(.failure(.encodingError))
             }
             data = encodedBody
         } else {
@@ -86,33 +92,33 @@ public class JSONAPI: API {
         }
         
         guard var request = try? self.request(method: method, baseURL: baseURL, resource: resource, headers: headers, params: params, body: data) else {
-            return completion(.failure(.invalidRequest))
+            return asyncCompletion(.failure(.invalidRequest))
         }
         decorator?(&request)
         
         let dataTask = requester.dataTask(with: request) { data, response, error in
             guard let httpResponse = response as? HTTPURLResponse else {
-                return completion(.failure(.invalidHTTPResponse))
+                return asyncCompletion(.failure(.invalidHTTPResponse))
             }
             
             guard (200..<300).contains(httpResponse.statusCode) else {
                 guard let responseData = data,
                     let appError = try? self.decoder.decode(E.self, from: responseData) else {
-                    return completion(.failure(.invalidJSONResponse(httpStatusCode: httpResponse.statusCode, body: data)))
+                    return asyncCompletion(.failure(.invalidJSONResponse(httpStatusCode: httpResponse.statusCode, body: data)))
                 }
-                return completion(.failure(.applicationError(appError)))
+                return asyncCompletion(.failure(.applicationError(appError)))
             }
             
             guard let responseData = data,
                 !responseData.isEmpty else {
-                    return completion(.failure(.emptyResponse))
+                    return asyncCompletion(.failure(.emptyResponse))
             }
             
             guard let result = try? self.decoder.decode(U.self, from: responseData) else {
-                return completion(.failure(.decodingError))
+                return asyncCompletion(.failure(.decodingError))
             }
             
-            completion(.success(result))
+            asyncCompletion(.success(result))
         }
         dataTask.resume()
     }

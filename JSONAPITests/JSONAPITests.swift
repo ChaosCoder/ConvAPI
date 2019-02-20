@@ -86,6 +86,22 @@ class JSONAPITests: XCTestCase {
         
         wait(for: [expect], timeout: 5)
     }
+
+    func testNonBlockingBehavior() {
+        let post = Post(name: "example")
+
+        let expect = self.expectation(description: "Completion")
+        api.request(method: .POST, baseURL: url, resource: "/post", body: post) { (result: APIResult<Post>) in
+            let semaphore = DispatchSemaphore(value: 0)
+            self.api.request(method: .POST, baseURL: self.url, resource: "/post", body: post) { (result: APIResult<Post>) in
+                expect.fulfill()
+                semaphore.signal()
+            }
+            semaphore.wait()
+        }
+
+        wait(for: [expect], timeout: 10)
+    }
     
     func testPost() {
         let post = Post(name: "example")
