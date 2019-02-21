@@ -21,24 +21,28 @@ extension JSONAPIError: LocalizedError {
 }
 
 public enum RequestError<E>: Error where E: Decodable & Error {
+    case underlying(Error)
     case invalidRequest
     case encodingError
     case invalidHTTPResponse
-    case invalidJSONResponse(httpStatusCode: Int, body: Data?)
+    case emptyErrorResponse(httpStatusCode: Int)
     case emptyResponse
-    case decodingError
+    case decodingErrorFailure(httpStatusCode: Int, data: Data, error: Error)
+    case decodingFailure(Error)
     case applicationError(E)
 }
 
 extension RequestError: LocalizedError {
     public var errorDescription: String? {
         switch self {
+        case .underlying(let error): return error.localizedDescription
         case .invalidRequest: return "Invalid request"
         case .encodingError: return "Encoding error"
-        case .invalidHTTPResponse: return "Invalid http response"
-        case .invalidJSONResponse(let httpStatusCode, let body): return "Invalid JSON response with status code \(httpStatusCode) and body \(body.debugDescription)"
-        case .emptyResponse: return "Empty response"
-        case .decodingError: return "Decoding error"
+        case .invalidHTTPResponse: return "Invalid HTTP response"
+        case let .emptyErrorResponse(httpStatusCode): return "Invalid error response with status code \(httpStatusCode)"
+        case .emptyResponse: return "Unexpected empty response"
+        case .decodingFailure(let error): return "Decoding failed: \(error.localizedDescription)"
+        case let .decodingErrorFailure(httpStatusCode, data, error): return "Decoding error response with status code \(httpStatusCode) and data: \(data) failed: \(error.localizedDescription)"
         case .applicationError(let appError): return "Application error: \(appError.localizedDescription)"
         }
     }
@@ -75,16 +79,10 @@ public class JSONAPI: API {
                                   body: T? = nil,
                                   decorator: ((inout URLRequest) -> Void)? = nil,
                                   completion: @escaping ((Result<U, RequestError<E>>) -> Void)) where T: Encodable, U: Decodable, E: Decodable & Error {
-        let asyncCompletion: (Result<U, RequestError<E>>) -> Void = { result in
-            DispatchQueue.global().async {
-                completion(result)
-            }
-        }
-
         let data: Data?
         if let body = body {
             guard let encodedBody = try? encoder.encode(body) else {
-                return asyncCompletion(.failure(.encodingError))
+                return completion(.failure(.encodingError))
             }
             data = encodedBody
         } else {
@@ -92,33 +90,42 @@ public class JSONAPI: API {
         }
         
         guard var request = try? self.request(method: method, baseURL: baseURL, resource: resource, headers: headers, params: params, body: data) else {
-            return asyncCompletion(.failure(.invalidRequest))
+            return completion(.failure(.invalidRequest))
         }
         decorator?(&request)
         
         let dataTask = requester.dataTask(with: request) { data, response, error in
+            guard error == nil else {
+                return completion(.failure(.underlying(error!)))
+            }
+
             guard let httpResponse = response as? HTTPURLResponse else {
-                return asyncCompletion(.failure(.invalidHTTPResponse))
+                return completion(.failure(.invalidHTTPResponse))
             }
-            
+
             guard (200..<300).contains(httpResponse.statusCode) else {
-                guard let responseData = data,
-                    let appError = try? self.decoder.decode(E.self, from: responseData) else {
-                    return asyncCompletion(.failure(.invalidJSONResponse(httpStatusCode: httpResponse.statusCode, body: data)))
+                guard let responseData = data, !responseData.isEmpty else {
+                    return completion(.failure(.emptyErrorResponse(httpStatusCode: httpResponse.statusCode)))
                 }
-                return asyncCompletion(.failure(.applicationError(appError)))
+                do {
+                    let appError = try self.decoder.decode(E.self, from: responseData)
+                    return completion(.failure(.applicationError(appError)))
+                } catch {
+                    return completion(.failure(.decodingErrorFailure(httpStatusCode: httpResponse.statusCode, data: responseData, error: error)))
+                }
             }
-            
+
             guard let responseData = data,
                 !responseData.isEmpty else {
-                    return asyncCompletion(.failure(.emptyResponse))
+                    return completion(.failure(.emptyResponse))
             }
-            
-            guard let result = try? self.decoder.decode(U.self, from: responseData) else {
-                return asyncCompletion(.failure(.decodingError))
+
+            do {
+                let result = try self.decoder.decode(U.self, from: responseData)
+                return completion(.success(result))
+            } catch {
+                return completion(.failure(.decodingFailure(error)))
             }
-            
-            asyncCompletion(.success(result))
         }
         dataTask.resume()
     }

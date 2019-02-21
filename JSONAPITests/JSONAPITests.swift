@@ -29,10 +29,13 @@ struct APIError: Codable, Error {
 typealias APIResult<T> = Result<T, RequestError<APIError>> where T: Codable
 
 class JSONAPITests: XCTestCase {
-    
-    let api = JSONAPI()
+
     let url = URL(string: "https://jsonapitestserver.herokuapp.com")!
-    
+
+    lazy var api: JSONAPI = {
+        return JSONAPI(requester: URLSession(configuration: URLSessionConfiguration.default, delegate: nil, delegateQueue: OperationQueue()))
+    }()
+
     struct Post: Codable, Equatable {
         let name: String
     }
@@ -56,7 +59,7 @@ class JSONAPITests: XCTestCase {
         let expect = self.expectation(description: "Completion")
         api.request(method: .GET, baseURL: url, resource: "/get", headers: ["X-HTTP-STATUS": "500"]) { (error: RequestError<APIError>?) in
             XCTAssertNotNil(error)
-            guard case .some(.invalidJSONResponse(let statusCode, _)) = error else {
+            guard case let .some(.decodingErrorFailure(statusCode, _, _)) = error else {
                 return XCTFail()
             }
             XCTAssertEqual(statusCode, 500)
