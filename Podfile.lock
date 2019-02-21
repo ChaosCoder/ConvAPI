@@ -1,5 +1,5 @@
 PODS:
-  - Result (4.0.0)
+  - Result (4.1.0)
 
 DEPENDENCIES:
   - Result (~> 4.0)
@@ -9,7 +9,7 @@ SPEC REPOS:
     - Result
 
 SPEC CHECKSUMS:
-  Result: 7645bb3f50c2ce726dd0ff2fa7b6f42bbe6c3713
+  Result: bd966fac789cc6c1563440b348ab2598cc24d5c7
 
 PODFILE CHECKSUM: 7bef62b543e9bf6c8a7098b21574e1f13115df7b
 

@@ -34,6 +34,7 @@
 		2C33CE0EB29FDC31EFD2585F /* Pods_JSONAPITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_JSONAPITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4CA00CB0209C9D3F50C4E54F /* Pods-JSONAPITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-JSONAPITests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-JSONAPITests/Pods-JSONAPITests.debug.xcconfig"; sourceTree = "<group>"; };
 		7D320DD22088FADC007C7DDE /* API.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = API.swift; sourceTree = "<group>"; };
+		7D3DCD5A221EAB68005E5875 /* JSONAPI.podspec */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = JSONAPI.podspec; sourceTree = "<group>"; };
 		7DBB74082199C45A002C5B82 /* APIMethod.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIMethod.swift; sourceTree = "<group>"; };
 		7DBB74092199C45A002C5B82 /* AsynchronousRequester.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AsynchronousRequester.swift; sourceTree = "<group>"; };
 		7DDDFB1620839BD700F3426C /* JSONAPI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = JSONAPI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -81,6 +82,7 @@
 		7DDDFB0C20839BD700F3426C = {
 			isa = PBXGroup;
 			children = (
+				7D3DCD5A221EAB68005E5875 /* JSONAPI.podspec */,
 				7DDDFB1820839BD700F3426C /* JSONAPI */,
 				7DDDFB2320839BD700F3426C /* JSONAPITests */,
 				7DDDFB1720839BD700F3426C /* Products */,
