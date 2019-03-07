@@ -7,9 +7,10 @@
 //
 
 import Foundation
+import PromiseKit
 
 public protocol AsynchronousRequester {
-    func dataTask(with request: URLRequest, completionHandler: @escaping (Data?, URLResponse?, Error?) -> Void) -> URLSessionDataTask
+    func dataTask(_: PMKNamespacer, with convertible: URLRequestConvertible) -> Promise<(data: Data, response: URLResponse)>
 }
 
 extension URLSession: AsynchronousRequester {}

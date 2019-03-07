@@ -4,14 +4,13 @@ use_frameworks!
 
 target 'JSONAPI' do
 
-  # Pods for JSONAPI
-  pod 'Result', '~> 4.0'
+  pod 'PromiseKit', '~> 6.8'
 
 end
 
 target 'JSONAPITests' do
   inherit! :search_paths
 
-  pod 'Result', '~> 4.0'
-
+  pod 'PromiseKit', '~> 6.8'
+  
 end

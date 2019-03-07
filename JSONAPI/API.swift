@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import Result
+import PromiseKit
 
 public protocol API {
 
@@ -20,17 +20,8 @@ public protocol API {
                     headers: [String: String]?,
                     params: [String: Any]?,
                     body: T?,
-                    decorator: ((inout URLRequest) -> Void)?,
-                    completion: @escaping ((Result<U, RequestError<E>>) -> Void)) where T: Encodable, U: Decodable, E: Decodable & Error
-    
-    func request<T, E>(method: APIMethod,
-                       baseURL: URL,
-                       resource: String,
-                       headers: [String: String]?,
-                       params: [String: Any]?,
-                       body: T?,
-                       decorator: ((inout URLRequest) -> Void)?,
-                       completion: @escaping (RequestError<E>?) -> Void) where T: Encodable, E: Decodable & Error
+                    error: E.Type,
+                    decorator: ((inout URLRequest) -> Void)?) -> Promise<U> where T: Encodable, U: Decodable, E: (Error & Decodable)
 }
 
 public protocol Empty: Codable {
@@ -44,61 +35,59 @@ public extension API {
                  resource: String = "/",
                  headers: [String: String]? = nil,
                  params: [String: Any]? = nil,
-                 decorator: ((inout URLRequest) -> Void)? = nil,
-                 completion: @escaping ((Result<U, RequestError<E>>) -> Void)) where U: Decodable, E: Decodable & Error {
+                 error: E.Type,
+                 decorator: ((inout URLRequest) -> Void)? = nil) -> Promise<U> where U: Decodable, E: Decodable & Error {
 
-        request(method: method,
-                baseURL: baseURL,
-                resource: resource,
-                headers: headers,
-                params: params,
-                body: nil as Bool?,
-                decorator: decorator,
-                completion: completion)
-    }
-    
-    func request<E>(method: APIMethod,
-                       baseURL: URL,
-                       resource: String = "/",
-                       headers: [String: String]? = nil,
-                       params: [String: Any]? = nil,
-                       decorator: ((inout URLRequest) -> Void)? = nil,
-                       completion: @escaping (RequestError<E>?) -> Void) where E: Decodable & Error {
-        request(method: method,
-                baseURL: baseURL,
-                resource: resource,
-                headers: headers,
-                params: params,
-                body: nil as Bool?,
-                decorator: decorator,
-                completion: completion)
+        return request(method: method,
+                       baseURL: baseURL,
+                       resource: resource,
+                       headers: headers,
+                       params: params,
+                       body: nil as Bool?,
+                       error: error,
+                       decorator: decorator)
     }
     
     func request<T, E>(method: APIMethod,
-                              baseURL: URL,
-                              resource: String = "/",
-                              headers: [String: String]? = nil,
-                              params: [String: Any]? = nil,
-                              body: T? = nil,
-                              decorator: ((inout URLRequest) -> Void)? = nil,
-                              completion: @escaping (RequestError<E>?) -> Void) where T: Encodable, E: Decodable & Error {
-        request(method: method,
-                baseURL: baseURL,
-                resource: resource,
-                headers: headers,
-                params: params,
-                body: body,
-                decorator: decorator,
-                completion: { (result: Result<EmptyResponse, RequestError<E>>) in
-            switch result {
-            case .success(_):
-                completion(nil)
-            case .failure(let error):
-                if case .emptyResponse = error {
-                    completion(nil)
-                } else {
-                    completion(error)
-                }
+                    baseURL: URL,
+                    resource: String = "/",
+                    headers: [String: String]? = nil,
+                    params: [String: Any]? = nil,
+                    body: T?,
+                    error: E.Type,
+                    decorator: ((inout URLRequest) -> Void)? = nil) -> Promise<Void> where T: Encodable, E: Decodable & Error {
+        let promise: Promise<EmptyResponse> = request(method: method,
+                                                      baseURL: baseURL,
+                                                      resource: resource,
+                                                      headers: headers,
+                                                      params: params,
+                                                      body: body,
+                                                      error: error,
+                                                      decorator: decorator)
+        return promise.asVoid()
+    }
+    
+    func request<E>(method: APIMethod,
+                    baseURL: URL,
+                    resource: String = "/",
+                    headers: [String: String]? = nil,
+                    params: [String: Any]? = nil,
+                    error: E.Type,
+                    decorator: ((inout URLRequest) -> Void)? = nil) -> Promise<Void> where E: Decodable & Error {
+        let promise: Promise<EmptyResponse> = request(method: method,
+                                                      baseURL: baseURL,
+                                                      resource: resource,
+                                                      headers: headers,
+                                                      params: params,
+                                                      body: nil as Bool?,
+                                                      error: error,
+                                                      decorator: decorator)
+        return promise.asVoid().recover({ error in
+            if let requestError = error as? RequestError,
+                case .emptyResponse = requestError {
+                return ()
+            } else {
+                throw error
             }
         })
     }

@@ -269,13 +269,13 @@
 			);
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-JSONAPITests/Pods-JSONAPITests-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/Result/Result.framework",
+				"${BUILT_PRODUCTS_DIR}/PromiseKit/PromiseKit.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Result.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PromiseKit.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -513,7 +513,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 4CA00CB0209C9D3F50C4E54F /* Pods-JSONAPITests.debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 49YH985E25;
 				INFOPLIST_FILE = JSONAPITests/Info.plist;
@@ -533,7 +532,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = A5DEF7A662926AC923DBE6A9 /* Pods-JSONAPITests.release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 49YH985E25;
 				INFOPLIST_FILE = JSONAPITests/Info.plist;
