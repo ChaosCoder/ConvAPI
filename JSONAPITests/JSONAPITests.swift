@@ -236,5 +236,13 @@ class JSONAPITests: XCTestCase {
         api.request(method: .POST, baseURL: url, body: post, error: APIError.self).cauterize()
         wait(for: [expect], timeout: 5)
     }
+
+    func testCallDecorator() {
+        let expect = self.expectation(description: "Decorator called")
+        api.request(method: .POST, baseURL: url, resource: "/post", error: APIError.self, decorator: { request in
+            expect.fulfill()
+        }).cauterize()
+        wait(for: [expect], timeout: 5)
+    }
 }
 

@@ -71,7 +71,7 @@ public class JSONAPI: API {
                                   decorator: ((inout URLRequest) -> Void)? = nil) -> Promise<U> where T: Encodable, U: Decodable, E: (Error & Decodable) {
         return firstly { () -> Promise<(data: Data, response: URLResponse)> in
             let data = try body.map { try encoder.encode($0) }
-            let task = try request(method: method, baseURL: baseURL, resource: resource, headers: headers, params: params, body: data)
+            let task = try request(method: method, baseURL: baseURL, resource: resource, headers: headers, params: params, body: data, decorator: decorator)
             
             return requester.dataTask(.promise, with: task)
         }.map { data, response -> U in
