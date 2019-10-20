@@ -13,7 +13,7 @@ Pod::Spec.new do |s|
   s.ios.deployment_target = "10.0"
   s.source        = { :git => "https://github.com/ChaosCoder/JSONAPI.git", :tag => s.version }
   s.source_files  = "JSONAPI", "JSONAPI/**/*.swift"
-  s.swift_version = "4.2"
+  s.swift_version = "5.0"
   s.dependency "PromiseKit", "~> 6.8.3"
 
 end

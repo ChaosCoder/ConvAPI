@@ -70,14 +70,7 @@ public class JSONAPI: API {
                                   error: E.Type,
                                   decorator: ((inout URLRequest) -> Void)? = nil) -> Promise<U> where T: Encodable, U: Decodable, E: (Error & Decodable) {
         return firstly { () -> Promise<(data: Data, response: URLResponse)> in
-            let data: Data?
-            if let body = body {
-                let encodedBody = try encoder.encode(body)
-                data = encodedBody
-            } else {
-                data = nil
-            }
-            
+            let data = try body.map { try encoder.encode($0) }
             let task = try request(method: method, baseURL: baseURL, resource: resource, headers: headers, params: params, body: data)
             
             return requester.dataTask(.promise, with: task)
