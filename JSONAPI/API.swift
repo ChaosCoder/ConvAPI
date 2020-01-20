@@ -64,7 +64,14 @@ public extension API {
                                                       body: body,
                                                       error: error,
                                                       decorator: decorator)
-        return promise.asVoid()
+        return promise.asVoid().recover({ error in
+            if let requestError = error as? RequestError,
+                case .emptyResponse = requestError {
+                return ()
+            } else {
+                throw error
+            }
+        })
     }
     
     func request<E>(method: APIMethod,
