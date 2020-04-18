@@ -70,7 +70,7 @@ fastlane/test_output
 ### SwiftPackageManager ###
 Packages
 xcuserdata
-*.xcodeproj
+
 ### Xcode ###
 # Xcode
 #
@@ -79,15 +79,5 @@ xcuserdata
 ## Build generated
 
 ## Various settings
-
-## Other
-
-### Xcode Patch ###
-*.xcodeproj/*
-!*.xcodeproj/project.pbxproj
-!*.xcodeproj/xcshareddata/
-!*.xcworkspace/contents.xcworkspacedata
-/*.gcno
-
 
 # End of https://www.gitignore.io/api/xcode,swift,cocoapods,swiftpackagemanager
