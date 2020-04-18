@@ -24,10 +24,6 @@ public protocol API {
                     decorator: ((inout URLRequest) -> Void)?) -> Promise<U> where T: Encodable, U: Decodable, E: (Error & Decodable)
 }
 
-public protocol Empty: Codable {
-    init()
-}
-
 public extension API {
 
     func request<U, E>(method: APIMethod,

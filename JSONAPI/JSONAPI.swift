@@ -38,37 +38,37 @@ extension RequestError: LocalizedError {
     }
 }
 
-public struct EmptyResponse: Empty {
-    public init() {}
-}
-
 public class JSONAPI: API {
-
+    
     var requester: AsynchronousRequester
     
-    public lazy var encoder: JSONEncoder = {
-        let encoder = JSONEncoder()
-        encoder.dateEncodingStrategy = .iso8601
-        return encoder
-    }()
-    public lazy var decoder: JSONDecoder = {
+    public var encoder: JSONEncoder
+    public var decoder: JSONDecoder
+    
+    public convenience init(requester: AsynchronousRequester = URLSession.shared) {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .iso8601
-        return decoder
-    }()
-
-    public init(requester: AsynchronousRequester = URLSession.shared) {
+        
+        let encoder = JSONEncoder()
+        encoder.dateEncodingStrategy = .iso8601
+        
+        self.init(requester: requester, encoder: encoder, decoder: decoder)
+    }
+    
+    public init(requester: AsynchronousRequester = URLSession.shared, encoder: JSONEncoder, decoder: JSONDecoder) {
         self.requester = requester
+        self.encoder = encoder
+        self.decoder = decoder
     }
     
     public func request<T, U, E>(method: APIMethod,
-                                  baseURL: URL,
-                                  resource: String = "/",
-                                  headers: [String: String]? = nil,
-                                  params: [String: Any]? = nil,
-                                  body: T? = nil,
-                                  error: E.Type,
-                                  decorator: ((inout URLRequest) -> Void)? = nil) -> Promise<U> where T: Encodable, U: Decodable, E: (Error & Decodable) {
+                                 baseURL: URL,
+                                 resource: String = "/",
+                                 headers: [String: String]? = nil,
+                                 params: [String: Any]? = nil,
+                                 body: T? = nil,
+                                 error: E.Type,
+                                 decorator: ((inout URLRequest) -> Void)? = nil) -> Promise<U> where T: Encodable, U: Decodable, E: (Error & Decodable) {
         return firstly { () -> Promise<(data: Data, response: URLResponse)> in
             let data = try body.map { try encoder.encode($0) }
             let task = try request(method: method, baseURL: baseURL, resource: resource, headers: headers, params: params, body: data, decorator: decorator)
@@ -90,24 +90,24 @@ public class JSONAPI: API {
             guard !data.isEmpty else {
                 throw RequestError.emptyResponse
             }
-                
+            
             return try self.decoder.decode(U.self, from: data)
         }
     }
-
+    
     private func request(method: APIMethod = .GET,
-                        baseURL: URL,
-                        resource: String = "/",
-                        headers: [String: String]? = nil,
-                        params: [String: Any]? = nil,
-                        body: Data? = nil,
-                        decorator: ((inout URLRequest) -> Void)? = nil) throws -> URLRequest {
+                         baseURL: URL,
+                         resource: String = "/",
+                         headers: [String: String]? = nil,
+                         params: [String: Any]? = nil,
+                         body: Data? = nil,
+                         decorator: ((inout URLRequest) -> Void)? = nil) throws -> URLRequest {
         
         guard let resourceURL = URL(string: baseURL.absoluteString + resource),
             var urlComponents = URLComponents(url: resourceURL, resolvingAgainstBaseURL: false) else {
-            throw RequestError.invalidRequest
+                throw RequestError.invalidRequest
         }
-
+        
         if let params = params {
             urlComponents.queryItems = params.compactMap ({ arg -> URLQueryItem in
                 let (key, value) = arg
@@ -115,16 +115,16 @@ public class JSONAPI: API {
                 return URLQueryItem(name: key, value: encodedValue)
             })
         }
-
+        
         guard let url = urlComponents.url else {
             throw RequestError.invalidRequest
         }
-
+        
         var request = URLRequest(url: url)
         request.httpMethod = method.rawValue
         request.httpBody = body
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-
+        
         if let headers = headers {
             for (key, value) in headers {
                 request.setValue(value, forHTTPHeaderField: key)
@@ -132,7 +132,7 @@ public class JSONAPI: API {
         }
         
         decorator?(&request)
-
+        
         return request
     }
 }
