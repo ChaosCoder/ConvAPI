@@ -1,10 +1,10 @@
 Pod::Spec.new do |s|
 
   s.name          = "ConveyPI"
-  s.version       = "1.0.1"
-  s.summary       = "Simple JSON API class to request codable resources."
+  s.version       = "2.0.0"
+  s.summary       = "Easy HTTP requests against REST-style APIs with codable JSON bodies"
   s.description   = <<-DESC
-                      Simple JSON API class. It allows to request a JSON API over HTTP with simple methods.
+                    ConveyPI allows easy HTTP requests in Swift against REST-style APIs with JSON formatting by supporting codable bodies and promised responses.
                     DESC
 
   s.homepage      = "https://github.com/ChaosCoder/ConveyPI"
