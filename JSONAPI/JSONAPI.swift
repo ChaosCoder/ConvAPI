@@ -75,23 +75,7 @@ public class JSONAPI: API {
             
             return requester.dataTask(.promise, with: task)
         }.map { data, response -> U in
-            guard let httpResponse = response as? HTTPURLResponse else {
-                throw RequestError.invalidHTTPResponse
-            }
-            
-            guard (200..<300).contains(httpResponse.statusCode) else {
-                guard !data.isEmpty else {
-                    throw RequestError.emptyErrorResponse(httpStatusCode: httpResponse.statusCode)
-                }
-                let appError = try self.decoder.decode(E.self, from: data)
-                throw appError
-            }
-            
-            guard !data.isEmpty else {
-                throw RequestError.emptyResponse
-            }
-            
-            return try self.decoder.decode(U.self, from: data)
+            return try self.parseResponse(data: data, response: response, error: error)
         }
     }
     
@@ -134,5 +118,25 @@ public class JSONAPI: API {
         decorator?(&request)
         
         return request
+    }
+    
+    private func parseResponse<U, E>(data: Data, response: URLResponse, error: E.Type) throws -> U where U: Decodable, E: (Error & Decodable) {
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw RequestError.invalidHTTPResponse
+        }
+        
+        guard (200..<300).contains(httpResponse.statusCode) else {
+            guard !data.isEmpty else {
+                throw RequestError.emptyErrorResponse(httpStatusCode: httpResponse.statusCode)
+            }
+            let appError = try self.decoder.decode(E.self, from: data)
+            throw appError
+        }
+        
+        guard !data.isEmpty else {
+            throw RequestError.emptyResponse
+        }
+        
+        return try self.decoder.decode(U.self, from: data)
     }
 }
