@@ -34,7 +34,7 @@ struct APIError: Codable, Error {
 
 class JSONAPITests: XCTestCase {
 
-    let url = URL(string: "https://jsonapitestserver.herokuapp.com")!
+    static let url = URL(string: "https://jsonapitestserver.herokuapp.com")!
 
     lazy var api: JSONAPI = {
         return JSONAPI(requester: URLSession(configuration: URLSessionConfiguration.default, delegate: nil, delegateQueue: OperationQueue()))
@@ -49,9 +49,18 @@ class JSONAPITests: XCTestCase {
         let date: Date
     }
     
+    override class func setUp() {
+        super.setUp()
+        
+        // Assert that the server is reachable
+        let (_, response, error) = URLSession.shared.synchronousDataTask(with: JSONAPITests.url)
+        assert((response as! HTTPURLResponse).statusCode == 200)
+        assert(error == nil)
+    }
+    
     func testPostWithEmptyResponse() {
         let expect = self.expectation(description: "Completion")
-        api.request(method: .POST, baseURL: url, resource: "/post", error: APIError.self).done { _ in
+        api.request(method: .POST, baseURL: JSONAPITests.url, resource: "/post", error: APIError.self).done { _ in
             expect.fulfill()
         }.cauterize()
         wait(for: [expect], timeout: 5)
@@ -59,7 +68,7 @@ class JSONAPITests: XCTestCase {
 
     func testInternalServerError() {
         let expect = self.expectation(description: "Completion")
-        api.request(method: .GET, baseURL: url, resource: "/get", headers: ["X-HTTP-STATUS": "500"], error: APIError.self).done { (_: Post) in
+        api.request(method: .GET, baseURL: JSONAPITests.url, resource: "/get", headers: ["X-HTTP-STATUS": "500"], error: APIError.self).done { (_: Post) in
             XCTFail()
         }.catch { error in
             expect.fulfill()
@@ -77,7 +86,7 @@ class JSONAPITests: XCTestCase {
         let expectedError = APIError(code: 1, message: "Test")
 
         let expect = self.expectation(description: "Completion")
-        api.request(method: .POST, baseURL: url, resource: "/post", headers: ["X-HTTP-STATUS": "400"], body: expectedError, error: APIError.self).catch { (error) in
+        api.request(method: .POST, baseURL: JSONAPITests.url, resource: "/post", headers: ["X-HTTP-STATUS": "400"], body: expectedError, error: APIError.self).catch { (error) in
             switch error {
             case let error as APIError:
                 XCTAssertEqual(error.code, expectedError.code)
@@ -95,8 +104,8 @@ class JSONAPITests: XCTestCase {
         let post = Post(name: "example")
 
         let expect = self.expectation(description: "Completion")
-        api.request(method: .POST, baseURL: url, resource: "/post", body: post, error: APIError.self).then { (_: Post) in
-            self.api.request(method:.POST, baseURL: self.url, resource: "/post", body: post, error: APIError.self).done { (_: Post) in
+        api.request(method: .POST, baseURL: JSONAPITests.url, resource: "/post", body: post, error: APIError.self).then { (_: Post) in
+            self.api.request(method:.POST, baseURL: JSONAPITests.url, resource: "/post", body: post, error: APIError.self).done { (_: Post) in
                 expect.fulfill()
             }
         }.cauterize()
@@ -108,8 +117,8 @@ class JSONAPITests: XCTestCase {
         let post = Post(name: "example")
         let expect = self.expectation(description: "Completion")
         
-        api.request(method: .POST, baseURL: url, resource: "/post", body: post, error: APIError.self).then { (responsePost: Post) in
-            self.api.request(method: .POST, baseURL: self.url, resource: "/post", body: responsePost, error: APIError.self)
+        api.request(method: .POST, baseURL: JSONAPITests.url, resource: "/post", body: post, error: APIError.self).then { (responsePost: Post) in
+            self.api.request(method: .POST, baseURL: JSONAPITests.url, resource: "/post", body: responsePost, error: APIError.self)
         }.done { (responsePost: Post) in
             XCTAssertEqual(responsePost, post)
             expect.fulfill()
@@ -124,8 +133,8 @@ class JSONAPITests: XCTestCase {
         
         let expect = self.expectation(description: "Completion")
         
-        let requestOne: Promise<Post> = api.request(method: .POST, baseURL: url, resource: "/post", body: postOne, error: APIError.self)
-        let requestTwo: Promise<Post> = api.request(method: .POST, baseURL: url, resource: "/post", body: postTwo, error: APIError.self)
+        let requestOne: Promise<Post> = api.request(method: .POST, baseURL: JSONAPITests.url, resource: "/post", body: postOne, error: APIError.self)
+        let requestTwo: Promise<Post> = api.request(method: .POST, baseURL: JSONAPITests.url, resource: "/post", body: postTwo, error: APIError.self)
         
         when(fulfilled: requestOne, requestTwo).done { responseOne, responseTwo in
             XCTAssertEqual(responseOne, postOne)
@@ -140,7 +149,7 @@ class JSONAPITests: XCTestCase {
         let post = Post(name: "example")
 
         let expect = self.expectation(description: "Completion")
-        api.request(method: .POST, baseURL: url, resource: "/post", body: post, error: APIError.self).done { (object: Post) in
+        api.request(method: .POST, baseURL: JSONAPITests.url, resource: "/post", body: post, error: APIError.self).done { (object: Post) in
             XCTAssertEqual(object, post)
             expect.fulfill()
         }.cauterize()
@@ -152,7 +161,7 @@ class JSONAPITests: XCTestCase {
         let post = Post(name: "test")
         let expect = self.expectation(description: "Completion")
         
-        api.request(method: .GET, baseURL: url, resource: "/get?name=test", error: APIError.self).done { (responsePost: Post) in
+        api.request(method: .GET, baseURL: JSONAPITests.url, resource: "/get?name=test", error: APIError.self).done { (responsePost: Post) in
             XCTAssertEqual(responsePost, post)
             expect.fulfill()
         }.cauterize()
@@ -162,7 +171,7 @@ class JSONAPITests: XCTestCase {
 
     func testBadRequest() {
         let expect = self.expectation(description: "Completion")
-        api.request(method: .GET, baseURL: url, resource: "/get", headers: ["X-HTTP-STATUS": "400"], error: APIError.self).done { (post: Post) in
+        api.request(method: .GET, baseURL: JSONAPITests.url, resource: "/get", headers: ["X-HTTP-STATUS": "400"], error: APIError.self).done { (post: Post) in
             XCTFail()
         }.catch { _ in
             expect.fulfill()
@@ -174,7 +183,7 @@ class JSONAPITests: XCTestCase {
         let headers = ["X-LOCATION": "https://jsonapitestserver.herokuapp.com/get?name=test"]
         let post = Post(name: "test")
         let expect = self.expectation(description: "Completion")
-        api.request(method: .GET, baseURL: url, resource: "/redirect", headers: headers, error: APIError.self).done { (responsePost: Post) in
+        api.request(method: .GET, baseURL: JSONAPITests.url, resource: "/redirect", headers: headers, error: APIError.self).done { (responsePost: Post) in
             XCTAssertEqual(responsePost, post)
             expect.fulfill()
         }.cauterize()
@@ -189,7 +198,7 @@ class JSONAPITests: XCTestCase {
         }
 
         let api = JSONAPI(requester: mockRequester)
-        api.request(method: .GET, baseURL: url, error: APIError.self).cauterize()
+        api.request(method: .GET, baseURL: JSONAPITests.url, error: APIError.self).cauterize()
         wait(for: [expect], timeout: 5)
     }
 
@@ -210,7 +219,7 @@ class JSONAPITests: XCTestCase {
 
         let post = PostWithDate(name: "Test", date: Date(timeIntervalSince1970: 1547813428))
         let api = JSONAPI(requester: mockRequester)
-        api.request(method: .POST, baseURL: url, body: post, error: APIError.self).cauterize()
+        api.request(method: .POST, baseURL: JSONAPITests.url, body: post, error: APIError.self).cauterize()
         wait(for: [expect], timeout: 5)
     }
 
@@ -233,13 +242,13 @@ class JSONAPITests: XCTestCase {
         let post = PostWithDate(name: "Test", date: Date(timeIntervalSince1970: secondsSince1970))
         let api = JSONAPI(requester: mockRequester)
         api.encoder.dateEncodingStrategy = .secondsSince1970
-        api.request(method: .POST, baseURL: url, body: post, error: APIError.self).cauterize()
+        api.request(method: .POST, baseURL: JSONAPITests.url, body: post, error: APIError.self).cauterize()
         wait(for: [expect], timeout: 5)
     }
 
     func testCallDecorator() {
         let expect = self.expectation(description: "Decorator called")
-        api.request(method: .POST, baseURL: url, resource: "/post", error: APIError.self, decorator: { request in
+        api.request(method: .POST, baseURL: JSONAPITests.url, resource: "/post", error: APIError.self, decorator: { request in
             expect.fulfill()
         }).cauterize()
         wait(for: [expect], timeout: 5)
