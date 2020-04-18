@@ -2,13 +2,13 @@
 platform :ios, '10.0'
 use_frameworks!
 
-target 'JSONAPI' do
+target 'ConveyPI' do
 
   pod 'PromiseKit', '~> 6.8'
 
 end
 
-target 'JSONAPITests' do
+target 'ConveyPITests' do
   inherit! :search_paths
 
   pod 'PromiseKit', '~> 6.8'

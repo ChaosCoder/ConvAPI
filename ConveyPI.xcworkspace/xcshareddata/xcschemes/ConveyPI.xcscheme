@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "7DDDFB1520839BD700F3426C"
-               BuildableName = "JSONAPI.framework"
-               BlueprintName = "JSONAPI"
-               ReferencedContainer = "container:JSONAPI.xcodeproj">
+               BuildableName = "ConveyPI.framework"
+               BlueprintName = "ConveyPI"
+               ReferencedContainer = "container:ConveyPI.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -27,29 +27,27 @@
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "7DDDFB1520839BD700F3426C"
+            BuildableName = "ConveyPI.framework"
+            BlueprintName = "ConveyPI"
+            ReferencedContainer = "container:ConveyPI.xcodeproj">
+         </BuildableReference>
+      </MacroExpansion>
       <Testables>
          <TestableReference
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "7DDDFB1E20839BD700F3426C"
-               BuildableName = "JSONAPITests.xctest"
-               BlueprintName = "JSONAPITests"
-               ReferencedContainer = "container:JSONAPI.xcodeproj">
+               BuildableName = "ConveyPITests.xctest"
+               BlueprintName = "ConveyPITests"
+               ReferencedContainer = "container:ConveyPI.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
-      <MacroExpansion>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "7DDDFB1520839BD700F3426C"
-            BuildableName = "JSONAPI.framework"
-            BlueprintName = "JSONAPI"
-            ReferencedContainer = "container:JSONAPI.xcodeproj">
-         </BuildableReference>
-      </MacroExpansion>
-      <AdditionalOptions>
-      </AdditionalOptions>
    </TestAction>
    <LaunchAction
       buildConfiguration = "Debug"
@@ -65,13 +63,11 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "7DDDFB1520839BD700F3426C"
-            BuildableName = "JSONAPI.framework"
-            BlueprintName = "JSONAPI"
-            ReferencedContainer = "container:JSONAPI.xcodeproj">
+            BuildableName = "ConveyPI.framework"
+            BlueprintName = "ConveyPI"
+            ReferencedContainer = "container:ConveyPI.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
-      <AdditionalOptions>
-      </AdditionalOptions>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"
@@ -83,9 +79,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "7DDDFB1520839BD700F3426C"
-            BuildableName = "JSONAPI.framework"
-            BlueprintName = "JSONAPI"
-            ReferencedContainer = "container:JSONAPI.xcodeproj">
+            BuildableName = "ConveyPI.framework"
+            BlueprintName = "ConveyPI"
+            ReferencedContainer = "container:ConveyPI.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </ProfileAction>
