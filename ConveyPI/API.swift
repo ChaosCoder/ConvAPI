@@ -10,30 +10,30 @@ import Foundation
 import PromiseKit
 
 public protocol API {
-
+    
     var encoder: JSONEncoder { get set }
     var decoder: JSONDecoder { get set }
     
     func request<T, U, E>(method: APIMethod,
-                    baseURL: URL,
-                    resource: String,
-                    headers: [String: String]?,
-                    params: [String: Any]?,
-                    body: T?,
-                    error: E.Type,
-                    decorator: ((inout URLRequest) -> Void)?) -> Promise<U> where T: Encodable, U: Decodable, E: (Error & Decodable)
+                          baseURL: URL,
+                          resource: String,
+                          headers: [String: String]?,
+                          params: [String: Any]?,
+                          body: T?,
+                          error: E.Type,
+                          decorator: ((inout URLRequest) -> Void)?) -> Promise<U> where T: Encodable, U: Decodable, E: (Error & Decodable)
 }
 
 public extension API {
-
+    
     func request<U, E>(method: APIMethod,
-                 baseURL: URL,
-                 resource: String = "/",
-                 headers: [String: String]? = nil,
-                 params: [String: Any]? = nil,
-                 error: E.Type,
-                 decorator: ((inout URLRequest) -> Void)? = nil) -> Promise<U> where U: Decodable, E: Decodable & Error {
-
+                       baseURL: URL,
+                       resource: String = "/",
+                       headers: [String: String]? = nil,
+                       params: [String: Any]? = nil,
+                       error: E.Type,
+                       decorator: ((inout URLRequest) -> Void)? = nil) -> Promise<U> where U: Decodable, E: Decodable & Error {
+        
         return request(method: method,
                        baseURL: baseURL,
                        resource: resource,
@@ -45,13 +45,13 @@ public extension API {
     }
     
     func request<T, E>(method: APIMethod,
-                    baseURL: URL,
-                    resource: String = "/",
-                    headers: [String: String]? = nil,
-                    params: [String: Any]? = nil,
-                    body: T?,
-                    error: E.Type,
-                    decorator: ((inout URLRequest) -> Void)? = nil) -> Promise<Void> where T: Encodable, E: Decodable & Error {
+                       baseURL: URL,
+                       resource: String = "/",
+                       headers: [String: String]? = nil,
+                       params: [String: Any]? = nil,
+                       body: T?,
+                       error: E.Type,
+                       decorator: ((inout URLRequest) -> Void)? = nil) -> Promise<Void> where T: Encodable, E: Decodable & Error {
         let promise: Promise<EmptyResponse> = request(method: method,
                                                       baseURL: baseURL,
                                                       resource: resource,
