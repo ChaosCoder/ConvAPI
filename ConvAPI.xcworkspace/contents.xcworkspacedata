@@ -2,9 +2,12 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:ConveyPI.xcodeproj">
+      location = "group:/Users/andreasganske/Development/Swift/ConvAPI/ConvAPI.xcodeproj">
    </FileRef>
    <FileRef
       location = "group:Pods/Pods.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:ConvAPI.xcodeproj">
    </FileRef>
 </Workspace>

@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "7DDDFB1520839BD700F3426C"
-               BuildableName = "ConveyPI.framework"
-               BlueprintName = "ConveyPI"
-               ReferencedContainer = "container:ConveyPI.xcodeproj">
+               BuildableName = "ConvAPI.framework"
+               BlueprintName = "ConvAPI"
+               ReferencedContainer = "container:ConvAPI.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -31,9 +31,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "7DDDFB1520839BD700F3426C"
-            BuildableName = "ConveyPI.framework"
-            BlueprintName = "ConveyPI"
-            ReferencedContainer = "container:ConveyPI.xcodeproj">
+            BuildableName = "ConvAPI.framework"
+            BlueprintName = "ConvAPI"
+            ReferencedContainer = "container:ConvAPI.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <Testables>
@@ -42,9 +42,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "7DDDFB1E20839BD700F3426C"
-               BuildableName = "ConveyPITests.xctest"
-               BlueprintName = "ConveyPITests"
-               ReferencedContainer = "container:ConveyPI.xcodeproj">
+               BuildableName = "ConvAPITests.xctest"
+               BlueprintName = "ConvAPITests"
+               ReferencedContainer = "container:ConvAPI.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -63,9 +63,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "7DDDFB1520839BD700F3426C"
-            BuildableName = "ConveyPI.framework"
-            BlueprintName = "ConveyPI"
-            ReferencedContainer = "container:ConveyPI.xcodeproj">
+            BuildableName = "ConvAPI.framework"
+            BlueprintName = "ConvAPI"
+            ReferencedContainer = "container:ConvAPI.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </LaunchAction>
@@ -79,9 +79,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "7DDDFB1520839BD700F3426C"
-            BuildableName = "ConveyPI.framework"
-            BlueprintName = "ConveyPI"
-            ReferencedContainer = "container:ConveyPI.xcodeproj">
+            BuildableName = "ConvAPI.framework"
+            BlueprintName = "ConvAPI"
+            ReferencedContainer = "container:ConvAPI.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </ProfileAction>

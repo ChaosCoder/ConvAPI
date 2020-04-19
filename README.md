@@ -1,14 +1,14 @@
-# ConveyPI 
-[![](http://img.shields.io/badge/Swift-5.0-blue.svg)]() [![](http://img.shields.io/badge/iOS-10.0%2B-blue.svg)]() [![](https://img.shields.io/github/license/ChaosCoder/ConveyPI.svg)](LICENSE.md) [![Build Status](https://app.bitrise.io/app/9bd0d2e769e903f9/status.svg?token=9IwhtVc_5lq3l5PnCY9LLQ&branch=master)](https://app.bitrise.io/app/9bd0d2e769e903f9)
+# ConvAPI 
+[![](http://img.shields.io/badge/Swift-5.0-blue.svg)]() [![](http://img.shields.io/badge/iOS-10.0%2B-blue.svg)]() [![](https://img.shields.io/github/license/ChaosCoder/ConvAPI.svg)](LICENSE.md) [![Build Status](https://app.bitrise.io/app/9bd0d2e769e903f9/status.svg?token=9IwhtVc_5lq3l5PnCY9LLQ&branch=master)](https://app.bitrise.io/app/9bd0d2e769e903f9)
 
 This library allows easy [HTTP](https://tools.ietf.org/html/rfc7231) requests in [Swift](https://swift.org) against [REST](https://en.wikipedia.org/wiki/Representational_state_transfer)-style [APIs](https://en.wikipedia.org/wiki/Application_programming_interface) with [JSON](https://www.json.org/) formatting by supporting [codable](https://developer.apple.com/documentation/swift/codable) bodies and [promised](https://github.com/mxcl/PromiseKit) responses.
 
 ## Etymology
-ConveyPI (`/kənˈveɪ-piː-aɪ/`) is a contraction of **Convey** (*to carry, bring, or take from one place to another*) and **API** (*Application Programming Interface*).
+ConvAPI (`/kənˈveɪ-piː-aɪ/`) is a contraction of **Convey** (*to carry, bring, or take from one place to another*) and **API** (*Application Programming Interface*).
 
 ## Usage
 
-ConveyPI has the method
+ConvAPI has the method
 ```swift
 func request<T, U, E>(method: APIMethod,
                       baseURL: URL,
@@ -43,10 +43,10 @@ struct User: Codable {
     let name: String
 }
         
-let api = ConveyPI()
+let api = ConvAPI()
 let baseURL = URL(string: "https://jsonplaceholder.typicode.com")!
 firstly { () -> Promise<User> in
-    api.request(method: .GET, baseURL: baseURL, resource: "/users/1", error: ConveyPIError.self)
+    api.request(method: .GET, baseURL: baseURL, resource: "/users/1", error: ConvAPIError.self)
 }.done { user in
     print(user) // User(id: 1, name: "Leanne Graham")
 }
@@ -79,7 +79,7 @@ firstly { () -> Promise<User> in
 ### Cocoapods
 
 ```ruby
-pod 'ConveyPI'
+pod 'ConvAPI'
 ```
 
 

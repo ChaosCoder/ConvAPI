@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		45129824874B8724C4FE0A1D /* Pods_ConveyPITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C90C7FB9BA4EFE4E2839C3D /* Pods_ConveyPITests.framework */; };
-		6EC1E1935B9D9DB0FD20DDC0 /* Pods_ConveyPI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C5739C3D48EC599C2B2A58F /* Pods_ConveyPI.framework */; };
+		45129824874B8724C4FE0A1D /* Pods_ConvAPITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C90C7FB9BA4EFE4E2839C3D /* Pods_ConvAPITests.framework */; };
+		6EC1E1935B9D9DB0FD20DDC0 /* Pods_ConvAPI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C5739C3D48EC599C2B2A58F /* Pods_ConvAPI.framework */; };
 		7D320DD32088FADC007C7DDE /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D320DD22088FADC007C7DDE /* API.swift */; };
 		7D6C9514244B35FD003C3A8F /* Empty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D6C9513244B35FD003C3A8F /* Empty.swift */; };
 		7D6C9515244B3601003C3A8F /* Empty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D6C9513244B35FD003C3A8F /* Empty.swift */; };
@@ -16,10 +16,10 @@
 		7DBB740B2199C45A002C5B82 /* APIMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DBB74082199C45A002C5B82 /* APIMethod.swift */; };
 		7DBB740C2199C45A002C5B82 /* APIMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DBB74082199C45A002C5B82 /* APIMethod.swift */; };
 		7DBB740D2199C45A002C5B82 /* AsynchronousRequester.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DBB74092199C45A002C5B82 /* AsynchronousRequester.swift */; };
-		7DDDFB2020839BD700F3426C /* ConveyPI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DDDFB1620839BD700F3426C /* ConveyPI.framework */; };
-		7DDDFB2520839BD700F3426C /* ConveyPITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DDDFB2420839BD700F3426C /* ConveyPITests.swift */; };
-		7DDDFB2720839BD700F3426C /* ConveyPI.h in Headers */ = {isa = PBXBuildFile; fileRef = 7DDDFB1920839BD700F3426C /* ConveyPI.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7DDDFB3120839BF500F3426C /* ConveyPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DDDFB3020839BF500F3426C /* ConveyPI.swift */; };
+		7DDDFB2020839BD700F3426C /* ConvAPI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DDDFB1620839BD700F3426C /* ConvAPI.framework */; };
+		7DDDFB2520839BD700F3426C /* ConvAPITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DDDFB2420839BD700F3426C /* ConvAPITests.swift */; };
+		7DDDFB2720839BD700F3426C /* ConvAPI.h in Headers */ = {isa = PBXBuildFile; fileRef = 7DDDFB1920839BD700F3426C /* ConvAPI.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7DDDFB3120839BF500F3426C /* ConvAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DDDFB3020839BF500F3426C /* ConvAPI.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -28,30 +28,30 @@
 			containerPortal = 7DDDFB0D20839BD700F3426C /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 7DDDFB1520839BD700F3426C;
-			remoteInfo = ConveyPI;
+			remoteInfo = ConvAPI;
 		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		48C3247508EEF78D716D6A49 /* Pods-ConveyPITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ConveyPITests.release.xcconfig"; path = "Target Support Files/Pods-ConveyPITests/Pods-ConveyPITests.release.xcconfig"; sourceTree = "<group>"; };
+		48C3247508EEF78D716D6A49 /* Pods-ConvAPITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ConvAPITests.release.xcconfig"; path = "Target Support Files/Pods-ConvAPITests/Pods-ConvAPITests.release.xcconfig"; sourceTree = "<group>"; };
 		7D320DD22088FADC007C7DDE /* API.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = API.swift; sourceTree = "<group>"; };
-		7D3DCD5A221EAB68005E5875 /* ConveyPI.podspec */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ConveyPI.podspec; sourceTree = "<group>"; };
+		7D3DCD5A221EAB68005E5875 /* ConvAPI.podspec */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ConvAPI.podspec; sourceTree = "<group>"; };
 		7D6C9513244B35FD003C3A8F /* Empty.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Empty.swift; sourceTree = "<group>"; };
 		7D6C9516244B37AC003C3A8F /* URLSession+Synchronous.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URLSession+Synchronous.swift"; sourceTree = "<group>"; };
 		7DBB74082199C45A002C5B82 /* APIMethod.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIMethod.swift; sourceTree = "<group>"; };
 		7DBB74092199C45A002C5B82 /* AsynchronousRequester.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AsynchronousRequester.swift; sourceTree = "<group>"; };
-		7DDDFB1620839BD700F3426C /* ConveyPI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ConveyPI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		7DDDFB1920839BD700F3426C /* ConveyPI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ConveyPI.h; sourceTree = "<group>"; };
+		7DDDFB1620839BD700F3426C /* ConvAPI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ConvAPI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		7DDDFB1920839BD700F3426C /* ConvAPI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ConvAPI.h; sourceTree = "<group>"; };
 		7DDDFB1A20839BD700F3426C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		7DDDFB1F20839BD700F3426C /* ConveyPITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ConveyPITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		7DDDFB2420839BD700F3426C /* ConveyPITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConveyPITests.swift; sourceTree = "<group>"; };
+		7DDDFB1F20839BD700F3426C /* ConvAPITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ConvAPITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		7DDDFB2420839BD700F3426C /* ConvAPITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvAPITests.swift; sourceTree = "<group>"; };
 		7DDDFB2620839BD700F3426C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		7DDDFB3020839BF500F3426C /* ConveyPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConveyPI.swift; sourceTree = "<group>"; };
-		86BDB003A2EB673ADFC675AB /* Pods-ConveyPI.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ConveyPI.debug.xcconfig"; path = "Target Support Files/Pods-ConveyPI/Pods-ConveyPI.debug.xcconfig"; sourceTree = "<group>"; };
-		9C5739C3D48EC599C2B2A58F /* Pods_ConveyPI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ConveyPI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		9C90C7FB9BA4EFE4E2839C3D /* Pods_ConveyPITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ConveyPITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		B30E115FBA009AC726A947E1 /* Pods-ConveyPI.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ConveyPI.release.xcconfig"; path = "Target Support Files/Pods-ConveyPI/Pods-ConveyPI.release.xcconfig"; sourceTree = "<group>"; };
-		CEACE7D43A169EEA7ABE9566 /* Pods-ConveyPITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ConveyPITests.debug.xcconfig"; path = "Target Support Files/Pods-ConveyPITests/Pods-ConveyPITests.debug.xcconfig"; sourceTree = "<group>"; };
+		7DDDFB3020839BF500F3426C /* ConvAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConvAPI.swift; sourceTree = "<group>"; };
+		86BDB003A2EB673ADFC675AB /* Pods-ConvAPI.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ConvAPI.debug.xcconfig"; path = "Target Support Files/Pods-ConvAPI/Pods-ConvAPI.debug.xcconfig"; sourceTree = "<group>"; };
+		9C5739C3D48EC599C2B2A58F /* Pods_ConvAPI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ConvAPI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		9C90C7FB9BA4EFE4E2839C3D /* Pods_ConvAPITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ConvAPITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		B30E115FBA009AC726A947E1 /* Pods-ConvAPI.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ConvAPI.release.xcconfig"; path = "Target Support Files/Pods-ConvAPI/Pods-ConvAPI.release.xcconfig"; sourceTree = "<group>"; };
+		CEACE7D43A169EEA7ABE9566 /* Pods-ConvAPITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ConvAPITests.debug.xcconfig"; path = "Target Support Files/Pods-ConvAPITests/Pods-ConvAPITests.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -59,7 +59,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6EC1E1935B9D9DB0FD20DDC0 /* Pods_ConveyPI.framework in Frameworks */,
+				6EC1E1935B9D9DB0FD20DDC0 /* Pods_ConvAPI.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -67,8 +67,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7DDDFB2020839BD700F3426C /* ConveyPI.framework in Frameworks */,
-				45129824874B8724C4FE0A1D /* Pods_ConveyPITests.framework in Frameworks */,
+				7DDDFB2020839BD700F3426C /* ConvAPI.framework in Frameworks */,
+				45129824874B8724C4FE0A1D /* Pods_ConvAPITests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -78,8 +78,8 @@
 		4EA3AB4304A50CCCF61ECF80 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				9C5739C3D48EC599C2B2A58F /* Pods_ConveyPI.framework */,
-				9C90C7FB9BA4EFE4E2839C3D /* Pods_ConveyPITests.framework */,
+				9C5739C3D48EC599C2B2A58F /* Pods_ConvAPI.framework */,
+				9C90C7FB9BA4EFE4E2839C3D /* Pods_ConvAPITests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -87,9 +87,9 @@
 		7DDDFB0C20839BD700F3426C = {
 			isa = PBXGroup;
 			children = (
-				7D3DCD5A221EAB68005E5875 /* ConveyPI.podspec */,
-				7DDDFB1820839BD700F3426C /* ConveyPI */,
-				7DDDFB2320839BD700F3426C /* ConveyPITests */,
+				7D3DCD5A221EAB68005E5875 /* ConvAPI.podspec */,
+				7DDDFB1820839BD700F3426C /* ConvAPI */,
+				7DDDFB2320839BD700F3426C /* ConvAPITests */,
 				7DDDFB1720839BD700F3426C /* Products */,
 				B14DD6682C81BE521D665ACE /* Pods */,
 				4EA3AB4304A50CCCF61ECF80 /* Frameworks */,
@@ -99,45 +99,44 @@
 		7DDDFB1720839BD700F3426C /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				7DDDFB1620839BD700F3426C /* ConveyPI.framework */,
-				7DDDFB1F20839BD700F3426C /* ConveyPITests.xctest */,
+				7DDDFB1620839BD700F3426C /* ConvAPI.framework */,
+				7DDDFB1F20839BD700F3426C /* ConvAPITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		7DDDFB1820839BD700F3426C /* ConveyPI */ = {
+		7DDDFB1820839BD700F3426C /* ConvAPI */ = {
 			isa = PBXGroup;
 			children = (
 				7D6C9513244B35FD003C3A8F /* Empty.swift */,
 				7DBB74082199C45A002C5B82 /* APIMethod.swift */,
 				7DBB74092199C45A002C5B82 /* AsynchronousRequester.swift */,
-				7DDDFB1920839BD700F3426C /* ConveyPI.h */,
-				7DDDFB3020839BF500F3426C /* ConveyPI.swift */,
+				7DDDFB1920839BD700F3426C /* ConvAPI.h */,
+				7DDDFB3020839BF500F3426C /* ConvAPI.swift */,
 				7D320DD22088FADC007C7DDE /* API.swift */,
 				7DDDFB1A20839BD700F3426C /* Info.plist */,
 			);
-			path = ConveyPI;
+			path = ConvAPI;
 			sourceTree = "<group>";
 		};
-		7DDDFB2320839BD700F3426C /* ConveyPITests */ = {
+		7DDDFB2320839BD700F3426C /* ConvAPITests */ = {
 			isa = PBXGroup;
 			children = (
-				7DDDFB2420839BD700F3426C /* ConveyPITests.swift */,
+				7DDDFB2420839BD700F3426C /* ConvAPITests.swift */,
 				7D6C9516244B37AC003C3A8F /* URLSession+Synchronous.swift */,
 				7DDDFB2620839BD700F3426C /* Info.plist */,
 			);
-			path = ConveyPITests;
+			path = ConvAPITests;
 			sourceTree = "<group>";
 		};
 		B14DD6682C81BE521D665ACE /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				86BDB003A2EB673ADFC675AB /* Pods-ConveyPI.debug.xcconfig */,
-				B30E115FBA009AC726A947E1 /* Pods-ConveyPI.release.xcconfig */,
-				CEACE7D43A169EEA7ABE9566 /* Pods-ConveyPITests.debug.xcconfig */,
-				48C3247508EEF78D716D6A49 /* Pods-ConveyPITests.release.xcconfig */,
+				86BDB003A2EB673ADFC675AB /* Pods-ConvAPI.debug.xcconfig */,
+				B30E115FBA009AC726A947E1 /* Pods-ConvAPI.release.xcconfig */,
+				CEACE7D43A169EEA7ABE9566 /* Pods-ConvAPITests.debug.xcconfig */,
+				48C3247508EEF78D716D6A49 /* Pods-ConvAPITests.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -148,16 +147,16 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7DDDFB2720839BD700F3426C /* ConveyPI.h in Headers */,
+				7DDDFB2720839BD700F3426C /* ConvAPI.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		7DDDFB1520839BD700F3426C /* ConveyPI */ = {
+		7DDDFB1520839BD700F3426C /* ConvAPI */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 7DDDFB2A20839BD700F3426C /* Build configuration list for PBXNativeTarget "ConveyPI" */;
+			buildConfigurationList = 7DDDFB2A20839BD700F3426C /* Build configuration list for PBXNativeTarget "ConvAPI" */;
 			buildPhases = (
 				53DB2E07BEAE920EBB78FFB0 /* [CP] Check Pods Manifest.lock */,
 				7DDDFB1120839BD700F3426C /* Sources */,
@@ -169,14 +168,14 @@
 			);
 			dependencies = (
 			);
-			name = ConveyPI;
-			productName = ConveyPI;
-			productReference = 7DDDFB1620839BD700F3426C /* ConveyPI.framework */;
+			name = ConvAPI;
+			productName = ConvAPI;
+			productReference = 7DDDFB1620839BD700F3426C /* ConvAPI.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		7DDDFB1E20839BD700F3426C /* ConveyPITests */ = {
+		7DDDFB1E20839BD700F3426C /* ConvAPITests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 7DDDFB2D20839BD700F3426C /* Build configuration list for PBXNativeTarget "ConveyPITests" */;
+			buildConfigurationList = 7DDDFB2D20839BD700F3426C /* Build configuration list for PBXNativeTarget "ConvAPITests" */;
 			buildPhases = (
 				06BCF8BFF6D0B7FAEC17C9CD /* [CP] Check Pods Manifest.lock */,
 				7DDDFB1B20839BD700F3426C /* Sources */,
@@ -189,9 +188,9 @@
 			dependencies = (
 				7DDDFB2220839BD700F3426C /* PBXTargetDependency */,
 			);
-			name = ConveyPITests;
-			productName = ConveyPITests;
-			productReference = 7DDDFB1F20839BD700F3426C /* ConveyPITests.xctest */;
+			name = ConvAPITests;
+			productName = ConvAPITests;
+			productReference = 7DDDFB1F20839BD700F3426C /* ConvAPITests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
@@ -214,7 +213,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 7DDDFB1020839BD700F3426C /* Build configuration list for PBXProject "ConveyPI" */;
+			buildConfigurationList = 7DDDFB1020839BD700F3426C /* Build configuration list for PBXProject "ConvAPI" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -226,8 +225,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				7DDDFB1520839BD700F3426C /* ConveyPI */,
-				7DDDFB1E20839BD700F3426C /* ConveyPITests */,
+				7DDDFB1520839BD700F3426C /* ConvAPI */,
+				7DDDFB1E20839BD700F3426C /* ConvAPITests */,
 			);
 		};
 /* End PBXProject section */
@@ -265,7 +264,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-ConveyPITests-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-ConvAPITests-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -278,15 +277,15 @@
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-ConveyPITests/Pods-ConveyPITests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-ConvAPITests/Pods-ConvAPITests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-ConveyPITests/Pods-ConveyPITests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-ConvAPITests/Pods-ConvAPITests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ConveyPITests/Pods-ConveyPITests-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ConvAPITests/Pods-ConvAPITests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		53DB2E07BEAE920EBB78FFB0 /* [CP] Check Pods Manifest.lock */ = {
@@ -304,7 +303,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-ConveyPI-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-ConvAPI-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -319,7 +318,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				7D320DD32088FADC007C7DDE /* API.swift in Sources */,
-				7DDDFB3120839BF500F3426C /* ConveyPI.swift in Sources */,
+				7DDDFB3120839BF500F3426C /* ConvAPI.swift in Sources */,
 				7D6C9514244B35FD003C3A8F /* Empty.swift in Sources */,
 				7DBB740D2199C45A002C5B82 /* AsynchronousRequester.swift in Sources */,
 				7DBB740B2199C45A002C5B82 /* APIMethod.swift in Sources */,
@@ -331,7 +330,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				7D6C9517244B37AC003C3A8F /* URLSession+Synchronous.swift in Sources */,
-				7DDDFB2520839BD700F3426C /* ConveyPITests.swift in Sources */,
+				7DDDFB2520839BD700F3426C /* ConvAPITests.swift in Sources */,
 				7DBB740C2199C45A002C5B82 /* APIMethod.swift in Sources */,
 				7D6C9515244B3601003C3A8F /* Empty.swift in Sources */,
 			);
@@ -342,7 +341,7 @@
 /* Begin PBXTargetDependency section */
 		7DDDFB2220839BD700F3426C /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 7DDDFB1520839BD700F3426C /* ConveyPI */;
+			target = 7DDDFB1520839BD700F3426C /* ConvAPI */;
 			targetProxy = 7DDDFB2120839BD700F3426C /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -470,7 +469,7 @@
 		};
 		7DDDFB2B20839BD700F3426C /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 86BDB003A2EB673ADFC675AB /* Pods-ConveyPI.debug.xcconfig */;
+			baseConfigurationReference = 86BDB003A2EB673ADFC675AB /* Pods-ConvAPI.debug.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
@@ -480,7 +479,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = ConveyPI/Info.plist;
+				INFOPLIST_FILE = ConvAPI/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -488,7 +487,7 @@
 					"@loader_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0.0;
-				PRODUCT_BUNDLE_IDENTIFIER = de.chaosspace.ConveyPI;
+				PRODUCT_BUNDLE_IDENTIFIER = de.chaosspace.ConvAPI;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -499,7 +498,7 @@
 		};
 		7DDDFB2C20839BD700F3426C /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = B30E115FBA009AC726A947E1 /* Pods-ConveyPI.release.xcconfig */;
+			baseConfigurationReference = B30E115FBA009AC726A947E1 /* Pods-ConvAPI.release.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
@@ -509,7 +508,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = ConveyPI/Info.plist;
+				INFOPLIST_FILE = ConvAPI/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -517,7 +516,7 @@
 					"@loader_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0.0;
-				PRODUCT_BUNDLE_IDENTIFIER = de.chaosspace.ConveyPI;
+				PRODUCT_BUNDLE_IDENTIFIER = de.chaosspace.ConvAPI;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 5.0;
@@ -527,17 +526,17 @@
 		};
 		7DDDFB2E20839BD700F3426C /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = CEACE7D43A169EEA7ABE9566 /* Pods-ConveyPITests.debug.xcconfig */;
+			baseConfigurationReference = CEACE7D43A169EEA7ABE9566 /* Pods-ConvAPITests.debug.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 49YH985E25;
-				INFOPLIST_FILE = ConveyPITests/Info.plist;
+				INFOPLIST_FILE = ConvAPITests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = de.chaosspace.ConveyPITests;
+				PRODUCT_BUNDLE_IDENTIFIER = de.chaosspace.ConvAPITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -546,17 +545,17 @@
 		};
 		7DDDFB2F20839BD700F3426C /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 48C3247508EEF78D716D6A49 /* Pods-ConveyPITests.release.xcconfig */;
+			baseConfigurationReference = 48C3247508EEF78D716D6A49 /* Pods-ConvAPITests.release.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 49YH985E25;
-				INFOPLIST_FILE = ConveyPITests/Info.plist;
+				INFOPLIST_FILE = ConvAPITests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = de.chaosspace.ConveyPITests;
+				PRODUCT_BUNDLE_IDENTIFIER = de.chaosspace.ConvAPITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -566,7 +565,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		7DDDFB1020839BD700F3426C /* Build configuration list for PBXProject "ConveyPI" */ = {
+		7DDDFB1020839BD700F3426C /* Build configuration list for PBXProject "ConvAPI" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				7DDDFB2820839BD700F3426C /* Debug */,
@@ -575,7 +574,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		7DDDFB2A20839BD700F3426C /* Build configuration list for PBXNativeTarget "ConveyPI" */ = {
+		7DDDFB2A20839BD700F3426C /* Build configuration list for PBXNativeTarget "ConvAPI" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				7DDDFB2B20839BD700F3426C /* Debug */,
@@ -584,7 +583,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		7DDDFB2D20839BD700F3426C /* Build configuration list for PBXNativeTarget "ConveyPITests" */ = {
+		7DDDFB2D20839BD700F3426C /* Build configuration list for PBXNativeTarget "ConvAPITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				7DDDFB2E20839BD700F3426C /* Debug */,

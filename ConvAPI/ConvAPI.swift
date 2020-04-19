@@ -1,6 +1,6 @@
 //
-//  ConveyPI.swift
-//  ConveyPI
+//  ConvAPI.swift
+//  ConvAPI
 //
 //  Created by Andreas Ganske on 19.04.18.
 //  Copyright © 2018 Andreas Ganske. All rights reserved.
@@ -9,12 +9,12 @@
 import Foundation
 import PromiseKit
 
-struct ConveyPIError: Error, Codable {
+struct ConvAPIError: Error, Codable {
     let type: String
     let description: String
 }
 
-extension ConveyPIError: LocalizedError {
+extension ConvAPIError: LocalizedError {
     var errorDescription: String? {
         return description
     }
@@ -38,7 +38,7 @@ extension RequestError: LocalizedError {
     }
 }
 
-public class ConveyPI: API {
+public class ConvAPI: API {
     
     var requester: AsynchronousRequester
     

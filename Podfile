@@ -2,13 +2,13 @@
 platform :ios, '10.0'
 use_frameworks!
 
-target 'ConveyPI' do
+target 'ConvAPI' do
 
   pod 'PromiseKit', '~> 6.8'
 
 end
 
-target 'ConveyPITests' do
+target 'ConvAPITests' do
   inherit! :search_paths
 
   pod 'PromiseKit', '~> 6.8'
