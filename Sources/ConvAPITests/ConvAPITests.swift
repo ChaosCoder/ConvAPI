@@ -8,6 +8,9 @@
 
 import XCTest
 import PromiseKit
+#if canImport(PMKFoundation)
+import PMKFoundation
+#endif
 @testable import ConvAPI
 
 struct MockRequester: AsynchronousRequester {

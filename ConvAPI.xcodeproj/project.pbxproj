@@ -87,9 +87,8 @@
 		7DDDFB0C20839BD700F3426C = {
 			isa = PBXGroup;
 			children = (
+				E5A3311C25A8A47D002B0526 /* Sources */,
 				7D3DCD5A221EAB68005E5875 /* ConvAPI.podspec */,
-				7DDDFB1820839BD700F3426C /* ConvAPI */,
-				7DDDFB2320839BD700F3426C /* ConvAPITests */,
 				7DDDFB1720839BD700F3426C /* Products */,
 				B14DD6682C81BE521D665ACE /* Pods */,
 				4EA3AB4304A50CCCF61ECF80 /* Frameworks */,
@@ -138,6 +137,15 @@
 				48C3247508EEF78D716D6A49 /* Pods-ConvAPITests.release.xcconfig */,
 			);
 			path = Pods;
+			sourceTree = "<group>";
+		};
+		E5A3311C25A8A47D002B0526 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				7DDDFB1820839BD700F3426C /* ConvAPI */,
+				7DDDFB2320839BD700F3426C /* ConvAPITests */,
+			);
+			path = Sources;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -479,7 +487,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = ConvAPI/Info.plist;
+				INFOPLIST_FILE = Sources/ConvAPI/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -508,7 +516,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = ConvAPI/Info.plist;
+				INFOPLIST_FILE = Sources/ConvAPI/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -530,7 +538,7 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 49YH985E25;
-				INFOPLIST_FILE = ConvAPITests/Info.plist;
+				INFOPLIST_FILE = Sources/ConvAPITests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -549,7 +557,7 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 49YH985E25;
-				INFOPLIST_FILE = ConvAPITests/Info.plist;
+				INFOPLIST_FILE = Sources/ConvAPITests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

@@ -8,6 +8,9 @@
 
 import Foundation
 import PromiseKit
+#if canImport(PMKFoundation)
+import PMKFoundation
+#endif
 
 public protocol AsynchronousRequester {
     func dataTask(_: PMKNamespacer, with convertible: URLRequestConvertible) -> Promise<(data: Data, response: URLResponse)>

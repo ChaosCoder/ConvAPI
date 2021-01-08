@@ -12,7 +12,7 @@ Pod::Spec.new do |s|
   s.author                = { "Andreas Ganske" => "info@chaosspace.de" }
   s.ios.deployment_target = "10.0"
   s.source        = { :git => "https://github.com/ChaosCoder/ConvAPI.git", :tag => s.version }
-  s.source_files  = "ConvAPI", "ConvAPI/**/*.swift"
+  s.source_files  = "Sources/ConvAPI", "Sources/ConvAPI/**/*.swift"
   s.swift_version = "5.0"
   s.dependency "PromiseKit", "~> 6.8"
 
