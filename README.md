@@ -82,6 +82,11 @@ firstly { () -> Promise<User> in
 pod 'ConvAPI'
 ```
 
+### Swift Package Manager
+
+```swift
+.package(url: "https://github.com/ChaosCoder/ConvAPI.git", from: "1.0.0")
+```
 
 ## Acknowledgments
 

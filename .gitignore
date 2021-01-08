@@ -51,6 +51,10 @@ playground.xcworkspace
 # Package.pins
 .build/
 
+# Xcode automatically generates this directory with a .xcworkspacedata file and xcuserdata
+# hence it is not needed unless you have added a package configuration file to your project
+.swiftpm
+
 # CocoaPods - Refactored to standalone file
 
 # Carthage - Refactored to standalone file
