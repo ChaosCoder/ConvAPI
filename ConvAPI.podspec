@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
   s.name          = "ConvAPI"
-  s.version       = "1.0.0"
+  s.version       = "1.0.1"
   s.summary       = "Easy HTTP requests against REST-style APIs with codable JSON bodies"
   s.description   = <<-DESC
                     ConvAPI allows easy HTTP requests in Swift against REST-style APIs with JSON formatting by supporting codable bodies and promised responses.
