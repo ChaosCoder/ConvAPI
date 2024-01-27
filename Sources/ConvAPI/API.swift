@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import PromiseKit
 
 public protocol API {
     
@@ -21,7 +20,7 @@ public protocol API {
                           params: [String: Any]?,
                           body: T?,
                           error: E.Type,
-                          decorator: ((inout URLRequest) -> Void)?) -> Promise<U> where T: Encodable, U: Decodable, E: (Error & Decodable)
+                          decorator: ((inout URLRequest) -> Void)?) async throws -> U where T: Encodable, U: Decodable, E: (Error & Decodable)
 }
 
 public extension API {
@@ -32,16 +31,16 @@ public extension API {
                        headers: [String: String]? = nil,
                        params: [String: Any]? = nil,
                        error: E.Type,
-                       decorator: ((inout URLRequest) -> Void)? = nil) -> Promise<U> where U: Decodable, E: Decodable & Error {
+                       decorator: ((inout URLRequest) -> Void)? = nil) async throws -> U where U: Decodable, E: Decodable & Error {
         
-        return request(method: method,
-                       baseURL: baseURL,
-                       resource: resource,
-                       headers: headers,
-                       params: params,
-                       body: nil as Bool?,
-                       error: error,
-                       decorator: decorator)
+        return try await request(method: method,
+                                 baseURL: baseURL,
+                                 resource: resource,
+                                 headers: headers,
+                                 params: params,
+                                 body: nil as Bool?,
+                                 error: error,
+                                 decorator: decorator)
     }
     
     func request<T, E>(method: APIMethod,
@@ -51,23 +50,24 @@ public extension API {
                        params: [String: Any]? = nil,
                        body: T?,
                        error: E.Type,
-                       decorator: ((inout URLRequest) -> Void)? = nil) -> Promise<Void> where T: Encodable, E: Decodable & Error {
-        let promise: Promise<EmptyResponse> = request(method: method,
-                                                      baseURL: baseURL,
-                                                      resource: resource,
-                                                      headers: headers,
-                                                      params: params,
-                                                      body: body,
-                                                      error: error,
-                                                      decorator: decorator)
-        return promise.asVoid().recover({ error in
+                       decorator: ((inout URLRequest) -> Void)? = nil) async throws -> Void where T: Encodable, E: Decodable & Error {
+        do {
+            let _: EmptyResponse = try await request(method: method,
+                                                     baseURL: baseURL,
+                                                     resource: resource,
+                                                     headers: headers,
+                                                     params: params,
+                                                     body: body,
+                                                     error: error,
+                                                     decorator: decorator)
+        } catch {
             if let requestError = error as? RequestError,
-                case .emptyResponse = requestError {
+               case .emptyResponse = requestError {
                 return ()
             } else {
                 throw error
             }
-        })
+        }
     }
     
     func request<E>(method: APIMethod,
@@ -76,22 +76,23 @@ public extension API {
                     headers: [String: String]? = nil,
                     params: [String: Any]? = nil,
                     error: E.Type,
-                    decorator: ((inout URLRequest) -> Void)? = nil) -> Promise<Void> where E: Decodable & Error {
-        let promise: Promise<EmptyResponse> = request(method: method,
-                                                      baseURL: baseURL,
-                                                      resource: resource,
-                                                      headers: headers,
-                                                      params: params,
-                                                      body: nil as Bool?,
-                                                      error: error,
-                                                      decorator: decorator)
-        return promise.asVoid().recover({ error in
+                    decorator: ((inout URLRequest) -> Void)? = nil) async throws -> Void where E: Decodable & Error {
+        do {
+            let _: EmptyResponse = try await request(method: method,
+                                                     baseURL: baseURL,
+                                                     resource: resource,
+                                                     headers: headers,
+                                                     params: params,
+                                                     body: nil as Bool?,
+                                                     error: error,
+                                                     decorator: decorator)
+        } catch {
             if let requestError = error as? RequestError,
-                case .emptyResponse = requestError {
+               case .emptyResponse = requestError {
                 return ()
             } else {
                 throw error
             }
-        })
+        }
     }
 }

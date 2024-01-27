@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import PromiseKit
 
 struct ConvAPIError: Error, Codable {
     let type: String
@@ -68,15 +67,11 @@ public class ConvAPI: API {
                                  params: [String: Any]? = nil,
                                  body: T? = nil,
                                  error: E.Type,
-                                 decorator: ((inout URLRequest) -> Void)? = nil) -> Promise<U> where T: Encodable, U: Decodable, E: (Error & Decodable) {
-        return firstly { () -> Promise<(data: Data, response: URLResponse)> in
-            let data = try body.map { try encoder.encode($0) }
-            let task = try request(method: method, baseURL: baseURL, resource: resource, headers: headers, params: params, body: data, decorator: decorator)
-            
-            return requester.dataTask(.promise, with: task)
-        }.map { data, response -> U in
-            return try self.parseResponse(data: data, response: response, error: error)
-        }
+                                 decorator: ((inout URLRequest) -> Void)? = nil) async throws -> U where T: Encodable, U: Decodable, E: (Error & Decodable) {
+        let bodyData = try body.map { try encoder.encode($0) }
+        let task = try request(method: method, baseURL: baseURL, resource: resource, headers: headers, params: params, body: bodyData, decorator: decorator)
+        let (data, response) = try await requester.data(for: task, delegate: nil)
+        return try parseResponse(data: data, response: response, error: error)
     }
     
     private func request(method: APIMethod = .GET,
@@ -129,7 +124,7 @@ public class ConvAPI: API {
             guard !data.isEmpty else {
                 throw RequestError.emptyErrorResponse(httpStatusCode: httpResponse.statusCode)
             }
-            let appError = try self.decoder.decode(E.self, from: data)
+            let appError = try decoder.decode(E.self, from: data)
             throw appError
         }
         
@@ -137,6 +132,6 @@ public class ConvAPI: API {
             throw RequestError.emptyResponse
         }
         
-        return try self.decoder.decode(U.self, from: data)
+        return try decoder.decode(U.self, from: data)
     }
 }

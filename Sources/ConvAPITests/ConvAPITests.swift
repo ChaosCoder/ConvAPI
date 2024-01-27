@@ -7,19 +7,14 @@
 //
 
 import XCTest
-import PromiseKit
-#if canImport(PMKFoundation)
-import PMKFoundation
-#endif
 @testable import ConvAPI
 
 struct MockRequester: AsynchronousRequester {
     let callback: (URLRequest) -> Void
     
-    func dataTask(_ namespace: PMKNamespacer, with convertible: URLRequestConvertible) -> Promise<(data: Data, response: URLResponse)> {
-        let request = convertible.pmkRequest
+    func data(for request: URLRequest, delegate: (URLSessionTaskDelegate)?) async throws -> (Data, URLResponse) {
         callback(request)
-        return URLSession.shared.dataTask(namespace, with: convertible)
+        return try await URLSession.shared.data(for: request)
     }
     
     func dataTask(with request: URLRequest, completionHandler: @escaping (Data?, URLResponse?, Error?) -> Void) -> URLSessionDataTask {
@@ -37,7 +32,7 @@ struct APIError: Codable, Error {
 
 class ConvAPITests: XCTestCase {
 
-    static let url = URL(string: "https://jsonapitestserver.herokuapp.com")!
+    static let url = URL(string: "http://localhost:1337")!
 
     lazy var api: ConvAPI = {
         return ConvAPI(requester: URLSession(configuration: URLSessionConfiguration.default, delegate: nil, delegateQueue: OperationQueue()))
@@ -61,27 +56,20 @@ class ConvAPITests: XCTestCase {
         assert(error == nil)
     }
     
-    func testPostWithEmptyResponse() {
-        let expect = self.expectation(description: "Completion")
-        api.request(method: .POST, baseURL: ConvAPITests.url, resource: "/post", error: APIError.self).done { _ in
-            expect.fulfill()
-        }.cauterize()
-        wait(for: [expect], timeout: 5)
+    func testPostWithEmptyResponse() async throws {
+        try await api.request(method: .POST, baseURL: ConvAPITests.url, resource: "/post", error: APIError.self)
     }
 
-    func testInternalServerError() {
-        let expect = self.expectation(description: "Completion")
-        api.request(method: .GET, baseURL: ConvAPITests.url, resource: "/get", headers: ["X-HTTP-STATUS": "500"], error: APIError.self).done { (_: Post) in
+    func testInternalServerError() async {
+        do {
+            let _: Post = try await api.request(method: .GET, baseURL: ConvAPITests.url, resource: "/get", headers: ["X-HTTP-STATUS": "500"], error: APIError.self)
             XCTFail()
-        }.catch { error in
-            expect.fulfill()
+        } catch {
+            
         }
-
-        wait(for: [expect], timeout: 5)
     }
-    
-    func testUsage() {
-        
+
+    func testUsage() async throws {
         struct User: Codable {
             let id: Int
             let name: String
@@ -92,21 +80,10 @@ class ConvAPITests: XCTestCase {
             let message: String
         }
         
-        let expect = self.expectation(description: "Completion")
-        
         let api = ConvAPI()
         let baseURL = URL(string: "https://jsonplaceholder.typicode.com")!
-        firstly { () -> Promise<User> in
-            api.request(method: .GET, baseURL: baseURL, resource: "/users/1", error: MyAPIError.self)
-        }.done { user in
-            print(user)
-        }.catch { error in
-            XCTFail(error.localizedDescription)
-        }.finally {
-            expect.fulfill()
-        }
-        
-        wait(for: [expect], timeout: 20)
+        let user: User = try await api.request(method: .GET, baseURL: baseURL, resource: "/users/1", error: MyAPIError.self)
+        print(user)
     }
 
     func testErrorDescription() {
@@ -114,115 +91,63 @@ class ConvAPITests: XCTestCase {
         XCTAssertEqual(error.localizedDescription, "Invalid request")
     }
 
-    func testBadRequestError() {
+    func testBadRequestError() async {
         let expectedError = APIError(code: 1, message: "Test")
 
-        let expect = self.expectation(description: "Completion")
-        api.request(method: .POST, baseURL: ConvAPITests.url, resource: "/post", headers: ["X-HTTP-STATUS": "400"], body: expectedError, error: APIError.self).catch { (error) in
+        do {
+            try await api.request(method: .POST, baseURL: ConvAPITests.url, resource: "/post", headers: ["X-HTTP-STATUS": "400"], body: expectedError, error: APIError.self)
+        } catch {
             switch error {
             case let error as APIError:
                 XCTAssertEqual(error.code, expectedError.code)
                 XCTAssertEqual(error.message, expectedError.message)
-                expect.fulfill()
             default:
                 XCTFail()
             }
         }
-
-        wait(for: [expect], timeout: 5)
     }
 
-    func testNonBlockingBehavior() {
-        let post = Post(name: "example")
-
-        let expect = self.expectation(description: "Completion")
-        api.request(method: .POST, baseURL: ConvAPITests.url, resource: "/post", body: post, error: APIError.self).then { (_: Post) in
-            self.api.request(method:.POST, baseURL: ConvAPITests.url, resource: "/post", body: post, error: APIError.self).done { (_: Post) in
-                expect.fulfill()
-            }
-        }.cauterize()
-
-        wait(for: [expect], timeout: 10)
-    }
-    
-    func testChaining() {
-        let post = Post(name: "example")
-        let expect = self.expectation(description: "Completion")
-        
-        api.request(method: .POST, baseURL: ConvAPITests.url, resource: "/post", body: post, error: APIError.self).then { (responsePost: Post) in
-            self.api.request(method: .POST, baseURL: ConvAPITests.url, resource: "/post", body: responsePost, error: APIError.self)
-        }.done { (responsePost: Post) in
-            XCTAssertEqual(responsePost, post)
-            expect.fulfill()
-        }.cauterize()
-        
-        wait(for: [expect], timeout: 10)
-    }
-    
-    func testWaitingForMultipleRequests() {
+    func testNonBlockingBehavior() async throws {
         let postOne = Post(name: "one")
         let postTwo = Post(name: "two")
+
+        async let post1: Post = api.request(method: .POST, baseURL: ConvAPITests.url, resource: "/post", body: postOne, error: APIError.self)
+        async let post2: Post = api.request(method: .POST, baseURL: ConvAPITests.url, resource: "/post", body: postTwo, error: APIError.self)
         
-        let expect = self.expectation(description: "Completion")
+        let posts = try await [post1, post2]
         
-        let requestOne: Promise<Post> = api.request(method: .POST, baseURL: ConvAPITests.url, resource: "/post", body: postOne, error: APIError.self)
-        let requestTwo: Promise<Post> = api.request(method: .POST, baseURL: ConvAPITests.url, resource: "/post", body: postTwo, error: APIError.self)
-        
-        when(fulfilled: requestOne, requestTwo).done { responseOne, responseTwo in
-            XCTAssertEqual(responseOne, postOne)
-            XCTAssertEqual(responseTwo, postTwo)
-            expect.fulfill()
-        }.cauterize()
-        
-        wait(for: [expect], timeout: 10)
+        XCTAssertEqual(posts, [postOne, postTwo])
     }
 
-    func testPost() {
+    func testPost() async throws {
         let post = Post(name: "example")
-
-        let expect = self.expectation(description: "Completion")
-        api.request(method: .POST, baseURL: ConvAPITests.url, resource: "/post", body: post, error: APIError.self).done { (object: Post) in
-            XCTAssertEqual(object, post)
-            expect.fulfill()
-        }.cauterize()
-
-        wait(for: [expect], timeout: 5)
+        let retrieved: Post = try await api.request(method: .POST, baseURL: ConvAPITests.url, resource: "/post", body: post, error: APIError.self)
+        XCTAssertEqual(retrieved, post)
     }
 
-    func testGet() {
+    func testGet() async throws {
         let post = Post(name: "test")
-        let expect = self.expectation(description: "Completion")
-        
-        api.request(method: .GET, baseURL: ConvAPITests.url, resource: "/get?name=test", error: APIError.self).done { (responsePost: Post) in
-            XCTAssertEqual(responsePost, post)
-            expect.fulfill()
-        }.cauterize()
-
-        wait(for: [expect], timeout: 5)
+        let responsePost: Post = try await api.request(method: .GET, baseURL: ConvAPITests.url, resource: "/get?name=test", error: APIError.self)
+        XCTAssertEqual(responsePost, post)
     }
 
-    func testBadRequest() {
-        let expect = self.expectation(description: "Completion")
-        api.request(method: .GET, baseURL: ConvAPITests.url, resource: "/get", headers: ["X-HTTP-STATUS": "400"], error: APIError.self).done { (post: Post) in
+    func testBadRequest() async throws {
+        do {
+            let _: Post = try await api.request(method: .GET, baseURL: ConvAPITests.url, resource: "/get", headers: ["X-HTTP-STATUS": "400"], error: APIError.self)
             XCTFail()
-        }.catch { _ in
-            expect.fulfill()
+        } catch {
+            
         }
-        wait(for: [expect], timeout: 5)
     }
 
-    func testComplexRedirection() {
-        let headers = ["X-LOCATION": "https://jsonapitestserver.herokuapp.com/get?name=test"]
+    func testComplexRedirection() async throws {
+        let headers = ["X-LOCATION": "http://localhost:1337/get?name=test"]
         let post = Post(name: "test")
-        let expect = self.expectation(description: "Completion")
-        api.request(method: .GET, baseURL: ConvAPITests.url, resource: "/redirect", headers: headers, error: APIError.self).done { (responsePost: Post) in
-            XCTAssertEqual(responsePost, post)
-            expect.fulfill()
-        }.cauterize()
-        wait(for: [expect], timeout: 5)
+        let responsePost: Post = try await api.request(method: .GET, baseURL: ConvAPITests.url, resource: "/redirect", headers: headers, error: APIError.self)
+        XCTAssertEqual(responsePost, post)
     }
 
-    func testContentTypeHeader() {
+    func testContentTypeHeader() async throws {
         let expect = self.expectation(description: "Completion")
         let mockRequester = MockRequester { request in
             XCTAssertEqual(request.value(forHTTPHeaderField: "Content-Type"), "application/json")
@@ -230,11 +155,11 @@ class ConvAPITests: XCTestCase {
         }
 
         let api = ConvAPI(requester: mockRequester)
-        api.request(method: .GET, baseURL: ConvAPITests.url, error: APIError.self).cauterize()
-        wait(for: [expect], timeout: 5)
+        try await api.request(method: .GET, baseURL: ConvAPITests.url, error: APIError.self)
+        await fulfillment(of: [expect])
     }
 
-    func test8601DateEncoding() {
+    func test8601DateEncoding() async throws {
 
         struct RawPostWithDate: Codable {
             let name: String
@@ -251,11 +176,11 @@ class ConvAPITests: XCTestCase {
 
         let post = PostWithDate(name: "Test", date: Date(timeIntervalSince1970: 1547813428))
         let api = ConvAPI(requester: mockRequester)
-        api.request(method: .POST, baseURL: ConvAPITests.url, body: post, error: APIError.self).cauterize()
-        wait(for: [expect], timeout: 5)
+        try await api.request(method: .POST, baseURL: ConvAPITests.url, resource: "/post", body: post, error: APIError.self)
+        await fulfillment(of: [expect])
     }
 
-    func testAlternativeDateEncoding() {
+    func testAlternativeDateEncoding() async throws {
 
         struct RawPostWithDate: Codable {
             let name: String
@@ -274,16 +199,16 @@ class ConvAPITests: XCTestCase {
         let post = PostWithDate(name: "Test", date: Date(timeIntervalSince1970: secondsSince1970))
         let api = ConvAPI(requester: mockRequester)
         api.encoder.dateEncodingStrategy = .secondsSince1970
-        api.request(method: .POST, baseURL: ConvAPITests.url, body: post, error: APIError.self).cauterize()
-        wait(for: [expect], timeout: 5)
+        try await api.request(method: .POST, baseURL: ConvAPITests.url, resource: "/post", body: post, error: APIError.self)
+        await fulfillment(of: [expect])
     }
 
-    func testCallDecorator() {
+    func testCallDecorator() async throws {
         let expect = self.expectation(description: "Decorator called")
-        api.request(method: .POST, baseURL: ConvAPITests.url, resource: "/post", error: APIError.self, decorator: { request in
+        try await api.request(method: .POST, baseURL: ConvAPITests.url, resource: "/post", error: APIError.self, decorator: { request in
             expect.fulfill()
-        }).cauterize()
-        wait(for: [expect], timeout: 5)
+        })
+        await fulfillment(of: [expect])
     }
 }
 
