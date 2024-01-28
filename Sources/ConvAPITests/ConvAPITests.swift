@@ -32,7 +32,7 @@ struct APIError: Codable, Error {
 
 class ConvAPITests: XCTestCase {
 
-    static let url = URL(string: "http://localhost:1337")!
+    static let url = URL(string: "https://uninterested-hosiery-bass.cyclic.app")!
 
     lazy var api: ConvAPI = {
         return ConvAPI(requester: URLSession(configuration: URLSessionConfiguration.default, delegate: nil, delegateQueue: OperationQueue()))
@@ -141,7 +141,7 @@ class ConvAPITests: XCTestCase {
     }
 
     func testComplexRedirection() async throws {
-        let headers = ["X-LOCATION": "http://localhost:1337/get?name=test"]
+        let headers = ["X-LOCATION": "\(ConvAPITests.url)/get?name=test"]
         let post = Post(name: "test")
         let responsePost: Post = try await api.request(method: .GET, baseURL: ConvAPITests.url, resource: "/redirect", headers: headers, error: APIError.self)
         XCTAssertEqual(responsePost, post)
